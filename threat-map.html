@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Outbreak Map | Cyber Operations</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Globe.gl for 3D Earth -->
+    <script src="https://unpkg.com/globe.gl"></script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { 
+            margin: 0; background-color: #000; color: #d1d5db; 
+            font-family: 'Rajdhani', sans-serif; overflow: hidden; 
+        }
+        h1, h2, h3, .mono { font-family: 'Share Tech Mono', monospace; }
+
+        .neon-text-red { color: #ff003c; text-shadow: 0 0 10px rgba(255, 0, 60, 0.6); }
+        .neon-text-orange { color: #ff8800; text-shadow: 0 0 10px rgba(255, 136, 0, 0.6); }
+
+        .glass-panel { 
+            background: linear-gradient(135deg, rgba(5, 5, 5, 0.8) 0%, rgba(15, 0, 0, 0.9) 100%);
+            backdrop-filter: blur(8px); border: 1px solid rgba(255, 0, 60, 0.2);
+            border-radius: 8px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Fullscreen Globe Container */
+        #globe-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: auto; cursor: grab; }
+        #globe-container:active { cursor: grabbing; }
+
+        #nav-layer { position: fixed; top: 20px; left: 20px; z-index: 10; pointer-events: none; }
+        #login-layer { position: fixed; top: 20px; right: 20px; z-index: 10; pointer-events: auto; }
+        #stats-layer { position: absolute; bottom: 20px; right: 20px; width: 300px; z-index: 10; pointer-events: auto; }
+        #ticker-layer { position: absolute; bottom: 20px; left: 20px; width: 400px; height: 250px; z-index: 10; pointer-events: auto; display: flex; flex-direction: column; }
+
+        .pointer-events-auto { pointer-events: auto; }
+
+        /* Scanline Overlay */
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(255,0,60,0.03) 50%, rgba(255,0,60,0.03));
+            background-size: 100% 4px; pointer-events: none; z-index: 9;
+        }
+
+        /* Matrix Canvas */
+        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; opacity: 0.15; pointer-events: none; }
+
+        .log-entry { animation: slideInX 0.3s ease-out forwards; opacity: 0; transform: translateX(-20px); }
+        @keyframes slideInX { to { opacity: 1; transform: translateX(0); } }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #ff003c; }
+    </style>
+</head>
+<body>
+
+    <!-- Background Layers -->
+    <canvas id="matrix-canvas"></canvas>
+    <div id="globe-container"></div>
+    <div class="scanlines"></div>
+
+    <!-- Top Left Title -->
+    <div id="nav-layer">
+        <a href="./dashboard.html" class="inline-flex items-center text-[#ff003c] hover:text-white transition-colors mono text-sm mb-4 bg-black/60 px-3 py-1 border border-[#ff003c]/40 rounded pointer-events-auto">
+            <i class="fa-solid fa-arrow-left mr-2"></i> Exit Threat Map
+        </a>
+        <h1 class="text-3xl font-bold neon-text-red uppercase tracking-widest"><i class="fa-solid fa-globe mr-3"></i> Outbreak Map</h1>
+        <p class="text-gray-400 mono text-xs mt-1"><span class="inline-block w-2 h-2 rounded-full bg-[#ff003c] animate-pulse mr-2"></span> LIVE TELEMETRY SYNCED</p>
+    </div>
+
+    <!-- Top Right Login -->
+    <div id="login-layer">
+        <button onclick="alert('Google SSO integration simulated.')" class="flex items-center space-x-2 bg-white text-black px-4 py-2 rounded shadow hover:bg-gray-200 transition-colors font-bold text-sm border border-gray-300">
+            <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-4 h-4" alt="Google">
+            <span>Sign in with Google</span>
+        </button>
+    </div>
+
+    <!-- Bottom Left: Live Ticker Feed -->
+    <div id="ticker-layer" class="glass-panel p-4">
+        <h3 class="text-white font-bold text-sm uppercase mono mb-3 border-b border-[#ff003c]/30 pb-2"><i class="fa-solid fa-satellite-dish mr-2 text-[#ff003c]"></i> Live Attack Feed</h3>
+        <div id="attack-feed" class="flex-1 overflow-y-auto space-y-2 pr-1 mono text-[10px]">
+            <!-- JS logs go here -->
+        </div>
+    </div>
+
+    <!-- Bottom Right: Statistics Panel -->
+    <div id="stats-layer" class="glass-panel p-4 space-y-4">
+        <div>
+            <h3 class="text-white font-bold text-xs uppercase mono mb-2">Top Targeted Sectors</h3>
+            <div class="space-y-1 text-[10px] mono">
+                <div class="flex justify-between text-gray-400"><span>Finance/Banking</span><span class="text-[#ff003c]">38%</span></div>
+                <div class="w-full bg-gray-900 h-1"><div class="bg-[#ff003c] h-1" style="width: 38%"></div></div>
+                
+                <div class="flex justify-between text-gray-400 mt-2"><span>Healthcare</span><span class="text-[#ff8800]">24%</span></div>
+                <div class="w-full bg-gray-900 h-1"><div class="bg-[#ff8800] h-1" style="width: 24%"></div></div>
+                
+                <div class="flex justify-between text-gray-400 mt-2"><span>Government</span><span class="text-[#00ffcc]">18%</span></div>
+                <div class="w-full bg-gray-900 h-1"><div class="bg-[#00ffcc] h-1" style="width: 18%"></div></div>
+            </div>
+        </div>
+
+        <div>
+            <h3 class="text-white font-bold text-xs uppercase mono mb-2 border-t border-[#ff003c]/30 pt-3">Dominant Threat Variants</h3>
+            <ul class="text-[10px] mono text-gray-400 space-y-1">
+                <li><i class="fa-solid fa-bug text-[#ff003c] mr-2"></i> Win32/Malware.Variant</li>
+                <li><i class="fa-solid fa-bug text-[#ff8800] mr-2"></i> JS/Cryptominer.Web</li>
+                <li><i class="fa-solid fa-bug text-gray-500 mr-2"></i> Phishing:Credential.Theft</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 1. Matrix Background (Red Theme) -->
+    <script>
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const chars = '01ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ'.split('');
+        const fontSize = 14; const columns = canvas.width / fontSize;
+        const drops = []; for (let x = 0; x < columns; x++) { drops[x] = Math.random() * -100; }
+
+        setInterval(() => {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#4a0000'; // Dark red matrix
+            ctx.font = fontSize + 'px "Share Tech Mono"';
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }, 35);
+    </script>
+
+    <!-- 2. GLOBE.GL Core & Attack Logic -->
+    <script>
+        // Coordinates for randomized attacks
+        const locations = [
+            { lat: 38.9, lng: -77.0, name: 'Washington, USA' },
+            { lat: 37.7, lng: -122.4, name: 'San Francisco, USA' },
+            { lat: 51.5, lng: -0.1, name: 'London, UK' },
+            { lat: 55.7, lng: 37.6, name: 'Moscow, RU' },
+            { lat: 39.9, lng: 116.4, name: 'Beijing, CN' },
+            { lat: -23.5, lng: -46.6, name: 'Sao Paulo, BR' },
+            { lat: -33.8, lng: 151.2, name: 'Sydney, AU' },
+            { lat: 35.6, lng: 139.6, name: 'Tokyo, JP' },
+            { lat: 1.3, lng: 103.8, name: 'Singapore, SG' },
+            { lat: 28.6, lng: 77.2, name: 'New Delhi, IN' },
+            { lat: 50.1, lng: 8.6, name: 'Frankfurt, DE' },
+            { lat: -26.2, lng: 28.0, name: 'Johannesburg, ZA' }
+        ];
+
+        const attackTypes = [
+            { protocol: 'SSH Brute Force', color: '#ff003c' },
+            { protocol: 'DDoS Amplification', color: '#ff8800' },
+            { protocol: 'SQL Injection', color: '#00ffcc' },
+            { protocol: 'Ransomware Payload', color: '#ff003c' },
+            { protocol: 'Malware Dropper', color: '#ff00ff' }
+        ];
+
+        let arcsData = [];
+        let globeInstance;
+        
+        // Initialize Globe
+        const container = document.getElementById('globe-container');
+        globeInstance = Globe()
+            (container)
+            .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
+            .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+            .backgroundColor('rgba(0,0,0,0)')
+            .pointOfView({ lat: 20, lng: -40, altitude: 2 })
+            .arcColor('color')
+            .arcDashLength(0.4)
+            .arcDashGap(0.2)
+            .arcDashAnimateTime(1500)
+            .arcStroke(1);
+
+        // Auto-rotate setup
+        globeInstance.controls().autoRotate = true;
+        globeInstance.controls().autoRotateSpeed = 0.8;
+        
+        window.addEventListener('resize', () => {
+            globeInstance.width(window.innerWidth).height(window.innerHeight);
+            const matrixCanvas = document.getElementById('matrix-canvas');
+            matrixCanvas.width = window.innerWidth;
+            matrixCanvas.height = window.innerHeight;
+        });
+
+        // 3. Fire Attacks continuously
+        const feedContainer = document.getElementById('attack-feed');
+
+        function triggerAttack() {
+            const srcIdx = Math.floor(Math.random() * locations.length);
+            let dstIdx = Math.floor(Math.random() * locations.length);
+            while(srcIdx === dstIdx) dstIdx = Math.floor(Math.random() * locations.length); // Avoid self-attack
+            
+            const src = locations[srcIdx];
+            const dst = locations[dstIdx];
+            const attackInfo = attackTypes[Math.floor(Math.random() * attackTypes.length)];
+
+            // Add arc to globe
+            const newArc = {
+                startLat: src.lat,
+                startLng: src.lng,
+                endLat: dst.lat,
+                endLng: dst.lng,
+                color: [attackInfo.color, attackInfo.color]
+            };
+            
+            arcsData = [...arcsData, newArc];
+            // keep array small so it doesn't bog down WebGL over time
+            if (arcsData.length > 30) arcsData.shift(); 
+            globeInstance.arcsData(arcsData);
+
+            // Add Text log
+            const time = new Date().toISOString().split('T')[1].substring(0, 8);
+            const logEl = document.createElement('div');
+            logEl.className = 'log-entry bg-black/40 border border-gray-800 p-2 rounded';
+            
+            logEl.innerHTML = `
+                <div class="flex justify-between opacity-50 mb-1">
+                    <span>${time}</span>
+                    <span style="color: ${attackInfo.color}">${attackInfo.protocol}</span>
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-white">${src.name}</span>
+                    <i class="fa-solid fa-arrow-right-long text-gray-600 mx-2"></i>
+                    <span class="text-white">${dst.name}</span>
+                </div>
+            `;
+            
+            feedContainer.prepend(logEl);
+            
+            if (feedContainer.children.length > 50) {
+                feedContainer.removeChild(feedContainer.lastChild);
+            }
+        }
+
+        // Fire multiple attacks per second
+        setInterval(triggerAttack, 800);
+        
+        // Initial burst
+        for(let i=0; i<10; i++) setTimeout(triggerAttack, i*100);
+
+    </script>
+</body>
+</html>

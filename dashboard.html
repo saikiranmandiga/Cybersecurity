@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Threat Dashboard | Cyber Operations Center</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { 
+            margin: 0; 
+            background-color: #030712; 
+            color: #d1d5db; 
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden; 
+        }
+
+        h1, h2, h3, .mono {
+            font-family: 'Share Tech Mono', monospace;
+        }
+        
+        /* Cyber Neon Theme */
+        .neon-text-green { color: #00ffcc; text-shadow: 0 0 10px rgba(0, 255, 204, 0.6); }
+        .neon-border-green { border-color: #00ffcc; box-shadow: 0 0 15px rgba(0, 255, 204, 0.3), inset 0 0 10px rgba(0, 255, 204, 0.1); }
+        
+        .neon-text-red { color: #ff003c; text-shadow: 0 0 10px rgba(255, 0, 60, 0.6); }
+        
+        /* Glassmorphism Panels */
+        .glass-panel { 
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.7) 0%, rgba(3, 7, 18, 0.8) 100%);
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        /* CRT Grid Background */
+        .cyber-bg {
+            background-image: linear-gradient(rgba(0, 255, 204, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 255, 204, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Scanline Overlay */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,255,204,0.02) 50%, rgba(0,255,204,0.02));
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        /* Matrix Canvas */
+        #matrix-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -2;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #030712; }
+        ::-webkit-scrollbar-thumb { background: #ff003c; border-radius: 4px; }
+    </style>
+</head>
+<body class="relative min-h-screen pb-20 cyber-bg">
+    
+    <canvas id="matrix-canvas"></canvas>
+    <div class="scanlines"></div>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-8 relative z-10">
+        
+        <div class="mb-8">
+            <a href="./index.html" class="inline-flex items-center text-[#00ffcc] hover:text-white transition-colors mono text-sm mb-4 bg-black/40 px-3 py-1 rounded border border-[#00ffcc]/30">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Return to Operations Center
+            </a>
+            
+            <header class="glass-panel p-6 border-b-4 border-b-[#ff003c]">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="text-3xl md:text-4xl font-bold neon-text-red mb-2 uppercase tracking-wide flex items-center">
+                            <i class="fa-solid fa-satellite-dish mr-3"></i> Global Threat Dashboard
+                        </h1>
+                        <p class="text-gray-400 mono">Aggregating live intelligence feeds from major infrastructure providers.</p>
+                    </div>
+                    <div class="text-right border border-gray-700 bg-black/60 p-3 rounded">
+                        <p class="mono text-[#00ffcc] text-xs mb-1 uppercase">System Status</p>
+                        <p class="font-bold text-white tracking-widest flex items-center justify-end">
+                            <span class="inline-block w-2 h-2 rounded-full bg-[#39ff14] mr-2"></span> ACTIVE SYNC
+                        </p>
+                    </div>
+                </div>
+            </header>
+        </div>
+
+        <!-- Dashboard Grid for RSS Feeds -->
+        <div id="sources-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Feed Panels will be injected here via JS -->
+        </div>
+
+    </main>
+
+    <!-- MATRIX DIGITAL RAIN SCRIPT -->
+    <script>
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ'.split('');
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+
+        const drops = [];
+        for (let x = 0; x < columns; x++) { drops[x] = Math.random() * -100; }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(3, 7, 18, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ff003c'; // Red matrix rain for the threat dashboard
+            ctx.font = fontSize + 'px "Share Tech Mono"';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) { drops[i] = 0; }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 35);
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+
+    <!-- MULTI-FEED FETCH SCRIPT -->
+    <script>
+        // RSS Sources targeted for maximum uptime and real news
+        const sources = {
+            "Palo Alto Networks": "https://security.paloaltonetworks.com/rss.xml",
+            "BleepingComputer": "https://www.bleepingcomputer.com/feed/",
+            "Dark Reading": "https://www.darkreading.com/rss.xml",
+            "Krebs on Security": "https://krebsonsecurity.com/feed/",
+            "The Hacker News": "https://feeds.feedburner.com/TheHackersNews"
+        };
+        
+        // We omit CISA.gov currently as their official xml often returns CORS or invalid RSS blocks on free public converters, 
+        // but it can be added into the array if needed.
+
+        const grid = document.getElementById('sources-grid');
+
+        // Render loading panels first
+        Object.keys(sources).forEach(sourceName => {
+            const safeId = sourceName.replace(/\s+/g, '-').toLowerCase();
+            grid.innerHTML += `
+                <section id="panel-${safeId}" class="glass-panel p-5 border-t-2 border-t-[#0088ff] flex flex-col h-[400px]">
+                    <h3 class="text-lg text-white font-bold mb-4 uppercase border-b border-gray-700 pb-2 flex items-center justify-between">
+                        <span>${sourceName}</span>
+                        <i class="fa-solid fa-rss text-xs text-gray-500"></i>
+                    </h3>
+                    <div id="content-${safeId}" class="flex-1 overflow-y-auto pr-2 space-y-3">
+                        <div class="h-full flex flex-col items-center justify-center text-[#0088ff] mono text-sm opacity-50 animate-pulse">
+                            <i class="fa-solid fa-satellite-dish mb-2 text-2xl"></i>
+                            <span>Intercepting feed...</span>
+                        </div>
+                    </div>
+                </section>
+            `;
+        });
+
+        // Fetch each source asynchronously
+        Object.entries(sources).forEach(async ([sourceName, rssUrl]) => {
+            const safeId = sourceName.replace(/\s+/g, '-').toLowerCase();
+            const container = document.getElementById(`content-${safeId}`);
+            
+            // Using a free RSS to JSON API
+            const apiEndpoint = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+            try {
+                const response = await fetch(apiEndpoint);
+                const data = await response.json();
+
+                if (data.status === 'ok') {
+                    container.innerHTML = ''; // Clear loader
+                    const articles = data.items.slice(0, 5); // take latest 5
+                    const escapeStr = (s) => s.replace(/[&<>'"]/g, t => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t]));
+                    
+                    articles.forEach(item => {
+                        const date = new Date(item.pubDate).toLocaleDateString();
+                        const titleLower = item.title.toLowerCase();
+                        
+                        // Parse severity based on title keywords
+                        let borderColor = 'border-l-[#00ffcc]'; // Default Low/Info
+                        let tag = '<span class="text-[#00ffcc] opacity-70">[INFO]</span> ';
+                        let hoverColor = 'group-hover:text-white';
+
+                        if (titleLower.includes('critical') || titleLower.includes('zero-day') || titleLower.includes('0-day') || titleLower.includes('cve-')) {
+                            borderColor = 'border-l-[#ff003c]'; // Red
+                            tag = '<span class="text-[#ff003c] font-bold">[CRITICAL]</span> ';
+                            hoverColor = 'group-hover:text-[#ff003c]';
+                        } else if (titleLower.includes('high') || titleLower.includes('breach') || titleLower.includes('exploit') || titleLower.includes('attack')) {
+                            borderColor = 'border-l-[#ff8800]'; // Orange
+                            tag = '<span class="text-[#ff8800] font-bold">[HIGH]</span> ';
+                            hoverColor = 'group-hover:text-[#ff8800]';
+                        } else if (titleLower.includes('medium') || titleLower.includes('warning') || titleLower.includes('patch') || titleLower.includes('update')) {
+                            borderColor = 'border-l-[#eab308]'; // Yellow
+                            tag = '<span class="text-[#eab308] font-bold">[MEDIUM]</span> ';
+                            hoverColor = 'group-hover:text-[#eab308]';
+                        }
+
+                        const html = `
+                            <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="block p-3 bg-black/40 border border-t-0 border-r-0 ${borderColor} border-b-gray-800 rounded hover:bg-black/80 hover:border-l-white transition-colors group">
+                                <h5 class="text-sm text-gray-200 font-medium line-clamp-2 ${hoverColor} mb-2 leading-tight">${tag}${escapeStr(item.title)}</h5>
+                                <p class="mono text-[10px] text-[#00ffcc] opacity-70 flex justify-between">
+                                    <span>[ <i class="fa-regular fa-clock"></i> ${escapeStr(date)} ]</span>
+                                    <span class="opacity-0 group-hover:opacity-100 transition-opacity">READ <i class="fa-solid fa-angle-right"></i></span>
+                                </p>
+                            </a>
+                        `;
+                        container.innerHTML += html;
+                    });
+                } else {
+                    throw new Error('Feed failed');
+                }
+            } catch (error) {
+                console.error(`Error fetching ${sourceName}:`, error);
+                // CISA or secure feeds often block proxy integrations
+                container.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-[#ff003c] mono text-xs text-center border border-dashed border-[#ff003c]/30 p-4 rounded bg-[#ff003c]/5">
+                        <i class="fa-solid fa-ban text-2xl mb-2"></i>
+                        Feed encryption blocked by provider.<br>Direct API access required.
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

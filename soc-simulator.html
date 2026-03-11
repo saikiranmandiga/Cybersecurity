@@ -1,0 +1,391 @@
+<!-- CTF FLAG 1: ZmxhZ3ttNHN0M3JfMGZfcDRsMF80bHQwfQ== -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive SOC Simulator | Saikiran Mandiga</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { margin: 0; background-color: #030712; color: #d1d5db; font-family: 'Rajdhani', sans-serif; overflow-x: hidden; }
+        h1, h2, h3, .mono { font-family: 'Share Tech Mono', monospace; }
+
+        .neon-text-green { color: #00ffcc; text-shadow: 0 0 10px rgba(0, 255, 204, 0.6); }
+        .neon-text-blue { color: #0088ff; text-shadow: 0 0 10px rgba(0, 136, 255, 0.6); }
+        .neon-text-red { color: #ff003c; text-shadow: 0 0 10px rgba(255, 0, 60, 0.6); }
+
+        .glass-panel { 
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.7) 0%, rgba(3, 7, 18, 0.9) 100%);
+            backdrop-filter: blur(12px); border: 1px solid rgba(0, 255, 204, 0.2);
+            border-radius: 8px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .cyber-bg {
+            background-image: linear-gradient(rgba(0, 255, 204, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 255, 204, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        #terminal-container {
+            position: fixed; bottom: -100%; left: 0; width: 100%; height: 50vh;
+            background: rgba(0, 0, 0, 0.95); border-top: 2px solid #00ffcc;
+            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 50000; display: flex; flex-direction: column; font-family: 'Share Tech Mono', monospace;
+        }
+        #terminal-container.active { bottom: 0; }
+
+        .log-entry { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* Architecture Nodes */
+        .arch-node { cursor: pointer; transition: all 0.2s; }
+        .arch-node:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(0,255,204,0.5); border-color: #00ffcc; }
+        .arch-line { position: absolute; z-index: -1; background: rgba(0,255,204,0.3); }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #00ffcc; }
+    </style>
+</head>
+<body class="cyber-bg pb-24">
+
+    <!-- Top Nav -->
+    <nav class="p-4 flex justify-between items-center border-b border-gray-800 bg-black/50 sticky top-0 z-50 backdrop-blur">
+        <a href="./index.html" class="text-[#00ffcc] hover:text-white mono text-sm flex items-center">
+            <i class="fa-solid fa-chevron-left mr-2"></i> Return to Main Profile
+        </a>
+        <button onclick="toggleTerminal()" class="px-4 py-1.5 border border-[#00ffcc] text-[#00ffcc] hover:bg-[#00ffcc] hover:text-black mono text-sm rounded transition-all font-bold">
+            [ INIT TERMINAL ]
+        </button>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-8 space-y-8">
+        
+        <header class="mb-4">
+            <h1 class="text-3xl font-bold neon-text-green uppercase tracking-wide mono"><i class="fa-solid fa-microchip mr-3"></i> Interactive SOC Simulator</h1>
+            <p class="text-gray-400">Explore network architecture, analyze live telemetry, and complete the embedded CTF challenge.</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- Homelab Architecture Mapping (Left Col, spans 8) -->
+            <section class="lg:col-span-8 glass-panel p-6 border-l-4 border-[#0088ff] flex flex-col relative overflow-hidden">
+                <h2 class="text-xl neon-text-blue mono uppercase mb-4"><i class="fa-solid fa-network-wired mr-2"></i> Homelab / Enterprise Architecture</h2>
+                
+                <div class="flex-1 min-h-[400px] relative rounded bg-black/60 border border-gray-800 flex items-center justify-center p-8">
+                    
+                    <!-- Diagram Container -->
+                    <div class="w-full max-w-2xl relative flex flex-col items-center gap-12 z-10">
+                        
+                        <!-- Internet Tier -->
+                        <div class="flex justify-center w-full relative">
+                            <div class="arch-node bg-gray-900 border border-gray-600 rounded-full w-20 h-20 flex flex-col items-center justify-center text-center p-2" onclick="showConfig('internet')">
+                                <i class="fa-solid fa-globe text-2xl text-gray-400 mb-1"></i>
+                                <span class="text-[10px] mono text-gray-400">WAN</span>
+                            </div>
+                            <!-- Line downwards -->
+                            <div class="arch-line w-0.5 h-12 left-1/2 -bottom-12"></div>
+                        </div>
+
+                        <!-- Edge / Firewall Tier -->
+                        <div class="flex justify-center w-full relative">
+                            <div class="arch-node bg-[#0f172a] border-2 border-[#ff003c] rounded-lg w-32 py-3 flex flex-col items-center justify-center text-center z-10" onclick="showConfig('firewall')">
+                                <i class="fa-solid fa-shield-halved text-2xl text-[#ff003c] mb-1"></i>
+                                <span class="text-xs font-bold mono text-[#ff003c]">Palo Alto NGFW</span>
+                            </div>
+                            <!-- Splitting Lines -->
+                            <div class="arch-line w-48 h-0.5 left-1/2 -ml-24 -bottom-6"></div>
+                            <div class="arch-line w-0.5 h-6 left-[calc(50%-6rem)] -bottom-6"></div>
+                            <div class="arch-line w-0.5 h-6 left-[calc(50%+6rem)] -bottom-6"></div>
+                        </div>
+
+                        <!-- Internal & DMZ Tier -->
+                        <div class="flex justify-between w-full px-8 relative mt-6">
+                            <!-- DMZ -->
+                            <div class="arch-node bg-[#0f172a] border border-[#00ffcc] rounded w-28 py-3 flex flex-col items-center text-center z-10" onclick="showConfig('dmz')">
+                                <i class="fa-brands fa-linux text-xl text-[#00ffcc] mb-1"></i>
+                                <span class="text-xs mono text-[#00ffcc]">DMZ Web</span>
+                            </div>
+
+                            <!-- SIEM / Internal -->
+                            <div class="arch-node bg-[#0f172a] border border-[#0088ff] rounded w-28 py-3 flex flex-col items-center text-center z-10" onclick="showConfig('siem')">
+                                <i class="fa-solid fa-server text-xl text-[#0088ff] mb-1"></i>
+                                <span class="text-xs mono text-[#0088ff]">Splunk SIEM</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Sliding Config Panel (Hidden by default) -->
+                <div id="config-panel" class="absolute top-0 right-[-100%] w-full md:w-1/2 h-full bg-black/95 border-l border-[#00ffcc] p-6 transition-all duration-300 z-20 flex flex-col">
+                    <div class="flex justify-between items-center mb-4 border-b border-gray-800 pb-2">
+                        <h3 id="config-title" class="text-lg neon-text-green mono uppercase">Component Details</h3>
+                        <button onclick="closeConfig()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div id="config-content" class="flex-1 overflow-y-auto text-xs mono text-green-400 whitespace-pre-wrap leading-relaxed">
+                        // Select a node to view configuration logic
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Right Col (Telemetry & CTF) -->
+            <div class="lg:col-span-4 space-y-6 flex flex-col">
+                
+                <!-- Live Telemetry -->
+                <section class="glass-panel p-5 border-t-2 border-[#ff003c] flex flex-col h-[300px] shrink-0">
+                    <h2 class="text-lg neon-text-red mono uppercase mb-3 flex justify-between items-center shrink-0">
+                        <span><i class="fa-solid fa-chart-line mr-2"></i> Live Telemetry</span>
+                        <span class="inline-block w-2 h-2 rounded-full bg-[#ff003c] animate-pulse"></span>
+                    </h2>
+                    <div id="telemetry-feed" class="flex-1 min-h-0 bg-black/50 border border-gray-800 rounded p-3 overflow-y-auto text-[10px] mono space-y-2">
+                        <!-- JS injects logs here -->
+                    </div>
+                </section>
+
+                <!-- Mini CTF Challenge -->
+                <section class="glass-panel p-5 border-t-2 border-[#00ffcc]">
+                    <h2 class="text-lg neon-text-green mono uppercase mb-2"><i class="fa-solid fa-flag mr-2"></i> Mini CTF Challenge</h2>
+                    <p class="text-xs text-gray-400 mb-4">Find the 3 hidden flags across this dashboard and terminal to prove your recon skills. Good luck, hunter.</p>
+                    
+                    <!-- Hints Toggle -->
+                    <details class="mb-5 text-xs mono text-gray-400 bg-black/40 border border-gray-700 rounded p-3 cursor-pointer hover:border-[#00ffcc]/50 transition-colors">
+                        <summary class="outline-none font-bold text-[#00ffcc] select-none hover:text-[#39ff14] transition-colors"><i class="fa-solid fa-unlock text-[10px] mr-1"></i> [ DECRYPT INTEL ] -> Need Hints?</summary>
+                        <ul class="list-disc pl-5 mt-3 space-y-3">
+                            <li><strong>Flag 1 (Source Recon):</strong> Inspect the raw HTML <span class="bg-gray-800 text-[#00ffcc] px-1 rounded">&lt;!-- source code --&gt;</span> of this actual page.</li>
+                            <li><strong>Flag 2 (Console Recon):</strong> Press <kbd class="bg-gray-800 px-1 rounded border border-gray-600 text-white">F12</kbd> (or Right Click -> Inspect) and check the browser's Developer Tools <strong>Console</strong> log.</li>
+                            <li><strong>Flag 3 (Terminal Intel):</strong> Open the <strong>Terminal</strong> above and try to escalate privileges to root access.</li>
+                        </ul>
+                    </details>
+
+                    <form id="ctf-form" class="space-y-3" onsubmit="event.preventDefault(); submitFlags();">
+                        <input type="text" id="flag1" placeholder="Flag 1 (Source Recon)" class="w-full bg-black border border-gray-700 rounded px-3 py-2 text-xs mono text-[#00ffcc] focus:outline-none focus:border-[#00ffcc]">
+                        <input type="text" id="flag2" placeholder="Flag 2 (Console Recon)" class="w-full bg-black border border-gray-700 rounded px-3 py-2 text-xs mono text-[#00ffcc] focus:outline-none focus:border-[#00ffcc]">
+                        <input type="text" id="flag3" placeholder="Flag 3 (Terminal Intel)" class="w-full bg-black border border-gray-700 rounded px-3 py-2 text-xs mono text-[#00ffcc] focus:outline-none focus:border-[#00ffcc]">
+                        
+                        <button type="submit" class="w-full py-2 bg-[#0f172a] border border-[#00ffcc]/50 text-[#00ffcc] hover:bg-[#00ffcc] hover:text-black transition-colors mono text-sm rounded font-bold">
+                            Submit Flags
+                        </button>
+                    </form>
+                    <div id="ctf-result" class="mt-3 text-xs mono text-center hidden p-2 rounded"></div>
+                </section>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Terminal Emulator -->
+    <div id="terminal-container" class="shadow-[0_-5px_30px_rgba(0,255,204,0.2)]">
+        <div class="flex justify-between items-center bg-gray-900 px-4 py-1 border-b border-gray-800">
+            <span class="text-[#00ffcc] text-xs uppercase"><i class="fa-solid fa-terminal mr-2"></i> root@cyber-ops:~</span>
+            <button onclick="toggleTerminal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-down-left-and-up-right-to-center"></i></button>
+        </div>
+        <div id="terminal-output" class="flex-1 p-4 overflow-y-auto text-[#d1d5db] text-sm whitespace-pre-wrap leading-relaxed">
+Welcome to the Cyber Operations Terminal [Version 1.0.1].
+Type 'help' for a list of available commands.
+
+        </div>
+        <div class="px-4 py-2 bg-black flex items-center">
+            <span class="text-[#00ffcc] mr-2">root@saikiran:~$</span>
+            <input type="text" id="terminal-input" class="flex-1 bg-transparent border-none outline-none text-[#00ffcc] font-mono w-full" autocomplete="off" spellcheck="false" autofocus>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // --- 1. CTF Flag 2 (Console) ---
+        console.log("%c[SYSTEM ALERT] Unauthorized access attempt blocked.", "color: #ff003c; font-size: 14px; font-weight: bold; font-family: monospace;");
+        console.log("%cDEBUG_STREAM: variable 'hidden_token' dumped to stdout:\nflag{c0ns0l3_c0mm4nd3r}", "color: #0088ff; font-family: monospace;");
+
+
+        // --- 2. Live Telemetry Generator ---
+        const logs = [
+            { type: 'INFO', msg: 'Wildfire cloud query initiated for SHA256: 8f4e...', color: 'text-gray-300' },
+            { type: 'WARN', msg: 'Multiple failed logins detected from 192.168.1.105', color: 'text-[#0088ff]' },
+            { type: 'ALERT', msg: 'Intrusion Prevention triggered: Known Malicious IP Drop', color: 'text-[#ff003c]' },
+            { type: 'DEBUG', msg: 'GlobalProtect VPN tunnel IPsec phase 2 renegotiation', color: 'text-gray-500' },
+            { type: 'INFO', msg: 'Splunk forwarder pushed 450MB logs successfully', color: 'text-gray-300' },
+            { type: 'WARN', msg: 'Suspicious DNS query: random_dga_domain_xxs.xyz', color: 'text-[#0088ff]' },
+            { type: 'ALERT', msg: 'Panorama policy push failure to Edge Firewall Node 2', color: 'text-[#ff003c]' }
+        ];
+
+        function addTelemetryLog() {
+            const feed = document.getElementById('telemetry-feed');
+            const randomLog = logs[Math.floor(Math.random() * logs.length)];
+            const time = new Date().toISOString().split('T')[1].substring(0, 8); // HH:MM:SS
+            
+            const logEl = document.createElement('div');
+            logEl.className = `log-entry ${randomLog.color}`;
+            logEl.innerHTML = `<span class="opacity-50 mr-2">[${time}]</span> <strong class="mr-1">[${randomLog.type}]</strong> ${randomLog.msg}`;
+            
+            feed.appendChild(logEl);
+            
+            // Keep only last 50
+            if (feed.children.length > 50) { feed.removeChild(feed.firstChild); }
+            // Auto scroll
+            feed.scrollTop = feed.scrollHeight;
+        }
+        setInterval(addTelemetryLog, 2500);
+        addTelemetryLog(); // initial run
+
+
+        // --- 3. Architecture Panel Logic ---
+        const configs = {
+            internet: `// WAN INTERFACE
+IP: DHCP / Public Space
+STATUS: UP
+-----------------
+Threat intel feeds active. 
+Inbound traffic default action: DROP.`,
+            
+            firewall: `// PALO ALTO NGFW (Managed via Panorama M-500)
+// SECURITY POLICY SNIPPET
+rule: "Allow Web to DMZ" {
+  from: untrust;
+  to: dmz;
+  source: any;
+  destination: 10.0.5.10;
+  application: [ web-browsing, ssl ];
+  action: allow;
+  profile-setting: {
+    profiles: [ vulnerability, anti-spyware, antivirus ];
+  }
+}
+// VPN: Global Protect configured for remote consulting admin access.`,
+            
+            dmz: `// DMZ - NGINX REVERSE PROXY
+// SSL Termination & WAF implementation
+server {
+    listen 443 ssl http2;
+    server_name portal.domain.local;
+    
+    ssl_certificate /etc/letsencrypt/live/fullchain.pem;
+    
+    # Forwarding to Internal App servers
+    location / {
+        proxy_pass http://10.0.10.50;
+    }
+}`,
+            
+            siem: `// SPLUNK ENTERPRISE - LOG AGGREGATION
+Index: pafw_traffic
+SourceType: pan:traffic
+-----------------
+Search query for anomalies:
+index=pafw_traffic action=allowed 
+| stats count by src_ip 
+| where count > 5000 
+| sort - count`
+        };
+
+        function showConfig(node) {
+            document.getElementById('config-panel').style.right = '0';
+            document.getElementById('config-title').innerText = node.toUpperCase() + " CONFIGURATION";
+            document.getElementById('config-content').innerText = configs[node];
+        }
+        function closeConfig() {
+            document.getElementById('config-panel').style.right = '-100%';
+        }
+
+
+        // --- 4. Terminal Emulator Logic ---
+        const terminal = document.getElementById('terminal-container');
+        const termInput = document.getElementById('terminal-input');
+        const termOutput = document.getElementById('terminal-output');
+
+        function toggleTerminal() {
+            terminal.classList.toggle('active');
+            if(terminal.classList.contains('active')) { setTimeout(() => termInput.focus(), 300); }
+        }
+
+        function printTerm(text, colorClass = "text-[#d1d5db]") {
+            const div = document.createElement('div');
+            div.className = colorClass + " mt-1";
+            div.innerHTML = text;
+            termOutput.appendChild(div);
+            termOutput.scrollTop = termOutput.scrollHeight;
+        }
+
+        termInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const cmd = this.value.trim().toLowerCase();
+                if (!cmd) return;
+                
+                printTerm(`root@saikiran:~$ ${this.value}`, "text-[#00ffcc] font-bold");
+                this.value = '';
+
+                switch(cmd) {
+                    case 'help':
+                        printTerm('Available commands:<br>- whoami: Print user information<br>- cat certifications.txt: View verified certs<br>- ping: Run a network trace simulation<br>- clear: Clear terminal screen<br>- sudo root: Attempt privilege escalation');
+                        break;
+                    case 'whoami':
+                        printTerm('User: Sahasra Saikiran Mandiga<br>Role: Cybersecurity Engineer<br>Status: System Administrator / Root');
+                        break;
+                    case 'cat certifications.txt':
+                        printTerm('[*] CISM (Certified Information Security Manager)<br>[*] CEH (Certified Ethical Hacker)<br>[*] CompTIA Security+<br>[*] AWS Certified SysOps Administrator', "text-[#0088ff]");
+                        break;
+                    case 'clear':
+                        termOutput.innerHTML = '';
+                        break;
+                    case 'ping':
+                        printTerm('PING 8.8.8.8 (Google DNS)...');
+                        let count = 0;
+                        const pingInt = setInterval(() => {
+                            printTerm(`64 bytes from 8.8.8.8: icmp_seq=${count} ttl=118 time=${Math.floor(Math.random()*40)+10} ms`);
+                            count++;
+                            if(count >= 4) { clearInterval(pingInt); printTerm('--- 8.8.8.8 ping statistics ---<br>4 packets transmitted, 4 received, 0% packet loss'); }
+                        }, 800);
+                        break;
+                    case 'sudo':
+                    case 'sudo root':
+                    case 'sudo su':
+                    case 'su':
+                        printTerm('[!] Authenticating via PAM Module...', "text-yellow-400");
+                        setTimeout(() => {
+                            printTerm('Access Granted. You have unlocked a CTF Flag!', "text-[#39ff14] font-bold");
+                            printTerm('flag{t3rm1n4l_r00t_0cr}', "text-[#ff003c] bg-black inline-block px-2");
+                        }, 1000);
+                        break;
+                    default:
+                        printTerm(`bash: ${cmd}: command not found. Type 'help' for available commands.`, "text-[#ff003c]");
+                }
+            }
+        });
+
+        // --- 5. CTF Form Submission ---
+        function submitFlags() {
+            const f1 = document.getElementById('flag1').value.trim();
+            const f2 = document.getElementById('flag2').value.trim();
+            const f3 = document.getElementById('flag3').value.trim();
+            const resultBox = document.getElementById('ctf-result');
+            
+            resultBox.classList.remove('hidden', 'bg-green-900/50', 'text-green-400', 'bg-red-900/50', 'text-red-400', 'border-green-500', 'border-red-500');
+            resultBox.classList.add('border');
+
+            // Flag values
+            const val1 = "flag{m4st3r_0f_p4l0_4lt0}";
+            const val2 = "flag{c0ns0l3_c0mm4nd3r}";
+            const val3 = "flag{t3rm1n4l_r00t_0cr}";
+
+            if (f1 === val1 && f2 === val2 && f3 === val3) {
+                resultBox.classList.add('bg-green-900/50', 'text-[#00ffcc]', 'border-[#00ffcc]');
+                resultBox.innerHTML = '<i class="fa-solid fa-unlock-keyhole mr-2"></i> CHALLENGE COMPLETE. You are a true operator.';
+            } else {
+                resultBox.classList.add('bg-red-900/50', 'text-[#ff003c]', 'border-[#ff003c]');
+                resultBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-2"></i> INCORRECT/MISSING FLAGS. Keep digging.';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sahasra Saikiran Mandiga | Cyber Operations Center</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Matter.js for 2D Physics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { 
+            margin: 0; 
+            background-color: #030712; 
+            color: #d1d5db; 
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden; 
+        }
+
+        h1, h2, h3, .mono {
+            font-family: 'Share Tech Mono', monospace;
+        }
+        
+        /* Cyber Neon Theme */
+        .neon-text-green { color: #00ffcc; text-shadow: 0 0 10px rgba(0, 255, 204, 0.6); }
+        .neon-text-blue { color: #0088ff; text-shadow: 0 0 10px rgba(0, 136, 255, 0.6); }
+        .neon-text-red { color: #ff003c; text-shadow: 0 0 10px rgba(255, 0, 60, 0.6); }
+        
+        .neon-border-green { border-color: #00ffcc; box-shadow: 0 0 15px rgba(0, 255, 204, 0.3), inset 0 0 10px rgba(0, 255, 204, 0.1); }
+        .neon-border-red { border-color: #ff003c; box-shadow: 0 0 15px rgba(255, 0, 60, 0.3), inset 0 0 10px rgba(255, 0, 60, 0.1); }
+        
+        /* Glassmorphism Panels */
+        .glass-panel { 
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.7) 0%, rgba(3, 7, 18, 0.8) 100%);
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        /* Profile Glow */
+        .profile-glow {
+            position: relative;
+            border-radius: 50%;
+            background: #030712;
+            padding: 4px;
+        }
+        .profile-glow::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, #00ffcc, #0088ff, #ff003c, #00ffcc);
+            z-index: -1;
+            border-radius: 50%;
+            background-size: 400%;
+            animation: glowing 20s linear infinite;
+        }
+        
+        @keyframes glowing {
+            0% { background-position: 0 0; }
+            50% { background-position: 400% 0; }
+            100% { background-position: 0 0; }
+        }
+
+        /* Scanline Overlay */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,255,204,0.02) 50%, rgba(0,255,204,0.02));
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        /* Cyber Grid & Canvas Underlays */
+        #matrix-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -2;
+            opacity: 0.3; /* Subtle so it doesn't overpower the text */
+            pointer-events: none;
+        }
+
+        /* Essential for physics transformation */
+        .physics-item { box-sizing: border-box; }
+        
+        /* Matter.js Overlay Canvas */
+        canvas.interactive-canvas {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 9999;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #030712; }
+        ::-webkit-scrollbar-thumb { background: #00ffcc; border-radius: 4px; }
+    </style>
+</head>
+<body class="relative min-h-screen pb-20">
+    
+    <!-- Dynamic Background Layers -->
+    <canvas id="matrix-canvas"></canvas>
+    <div class="scanlines"></div>
+
+    <main id="main-container" class="max-w-7xl mx-auto p-4 md:p-8 relative z-10">
+        
+        <!-- Top Toolbar & Anti-Gravity Button -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8 relative z-[10000] gap-4">
+            <a href="./threat-map.html" class="flex items-center space-x-3 text-xs mono hover:bg-white/10 p-2 rounded transition-colors group">
+                <span class="inline-block w-2 h-2 rounded-full bg-[#ff003c] animate-pulse"></span>
+                <span class="neon-text-red uppercase tracking-widest group-hover:text-white">Live Threat Map Online</span>
+            </a>
+            
+            <div class="flex space-x-3">
+                <a href="./soc-simulator.html" class="px-4 py-2 border border-[#0088ff] text-[#0088ff] bg-black/50 hover:bg-[#0088ff] hover:text-white transition-all duration-300 uppercase tracking-widest font-bold text-xs pointer-events-auto rounded glass-panel flex items-center">
+                    <i class="fa-solid fa-server mr-2"></i> Enter SOC Simulator
+                </a>
+                
+                <button id="gravity-btn" onclick="toggleGravity()" class="px-4 py-2 border border-[#ff003c] text-[#ff003c] bg-black/50 hover:bg-[#ff003c] hover:text-white transition-all duration-300 uppercase tracking-widest font-bold text-xs pointer-events-auto rounded glass-panel">
+                    <i class="fa-solid fa-triangle-exclamation mr-2"></i> System Override
+                </button>
+            </div>
+        </div>
+
+        <!-- System Dashboard Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Hero / Profile (Left Col 1) -->
+            <header class="physics-item lg:col-span-8 p-8 glass-panel flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden group">
+                <!-- Decorative Corners -->
+                <div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#00ffcc] rounded-tl-xl"></div>
+                <div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[#00ffcc] rounded-br-xl"></div>
+
+                <div class="profile-glow shrink-0">
+                    <img src="profile-placeholder.jpg" onerror="this.src='https://ui-avatars.com/api/?name=Saikiran+Mandiga&background=030712&color=00ffcc&size=150'" alt="Profile Profile" class="w-32 h-32 rounded-full object-cover">
+                </div>
+                
+                <div class="flex-1 text-center md:text-left">
+                    <p class="mono text-[#0088ff] text-sm mb-2 uppercase tracking-widest">/// Identity Confirmed</p>
+                    <h1 class="text-4xl md:text-5xl font-bold neon-text-green mb-2 uppercase tracking-wide">
+                        Sahasra Saikiran Mandiga
+                    </h1>
+                    <h2 class="text-xl md:text-2xl text-white mb-6 font-medium">
+                        Cybersecurity Engineer <span class="text-[#00ffcc]">|</span> Sr. Cybersecurity Consultant
+                    </h2>
+                    
+                    <div class="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-gray-300 mono">
+                        <span class="flex items-center space-x-2 bg-black/40 px-3 py-1 rounded border border-gray-700">
+                            <i class="fa-solid fa-location-crosshairs text-[#00ffcc]"></i> <span>Katy, TX</span>
+                        </span>
+                        <span class="flex items-center space-x-2 bg-black/40 px-3 py-1 rounded border border-gray-700">
+                            <i class="fa-solid fa-envelope text-[#00ffcc]"></i> <span>saikiranmandiga85@gmail.com</span>
+                        </span>
+                        <span class="flex items-center space-x-2 bg-black/40 px-3 py-1 rounded border border-gray-700">
+                            <i class="fa-solid fa-phone-flip text-[#00ffcc]"></i> <span>6303283679</span>
+                        </span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Live Threat Intel Feed (Right Col 1) -->
+            <section class="physics-item lg:col-span-4 p-6 glass-panel flex flex-col h-full border-t-4 border-t-[#ff003c]">
+                <h3 class="text-xl neon-text-red mb-4 mono uppercase flex items-center justify-between">
+                    <span><i class="fa-solid fa-satellite-dish mr-2"></i> Global Threat Intel</span>
+                    <i class="fa-solid fa-circle-nodes text-[#ff003c] text-sm animate-spin" style="animation-duration: 4s;"></i>
+                </h3>
+                
+                <div class="flex-1 overflow-hidden relative" style="height: 250px;">
+                    <!-- Scroll wrapper for css animation -->
+                    <div id="news-container" class="space-y-3 absolute w-full transition-transform" style="animation: scrollUp 40s linear infinite;">
+                        <!-- Loading State -->
+                        <div class="flex items-center justify-center text-[#ff003c] mono h-[250px]">
+                            <span>Intercepting signals...</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <style>
+                    @keyframes scrollUp {
+                        0% { transform: translateY(100%); }
+                        100% { transform: translateY(-100%); }
+                    }
+                    /* Pause animation on hover so user can read/click */
+                    #news-container:hover {
+                        animation-play-state: paused;
+                    }
+                </style>
+
+                <a href="./dashboard.html" class="w-full py-2 bg-[#ff003c]/10 text-[#ff003c] border border-[#ff003c]/50 rounded hover:bg-[#ff003c] hover:text-white transition-colors mono text-sm font-bold mt-auto text-center inline-block">
+                    View Full Threat Dashboard <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-xs"></i>
+                </a>
+            </section>
+
+            <!-- Left Main Column -->
+            <div class="lg:col-span-5 space-y-6 flex-col flex">
+                
+                <!-- Skills & Certifications -->
+                <section class="physics-item p-6 glass-panel border-t-2 border-t-[#0088ff]">
+                    <h3 class="text-xl neon-text-blue mb-5 mono uppercase"><i class="fa-solid fa-fingerprint mr-2"></i> Technical Arsenal</h3>
+                    
+                    <div class="space-y-5">
+                        <div>
+                            <p class="text-[#0088ff] mono text-sm mb-2 uppercase flex justify-between">
+                                <span>[ Certifications ]</span> <span class="text-xs">Verified</span>
+                            </p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-black/50 border border-[#00ffcc] text-[#00ffcc] text-xs font-bold rounded-sm uppercase tracking-wider">CISM</span>
+                                <span class="px-3 py-1 bg-black/50 border border-[#00ffcc] text-[#00ffcc] text-xs font-bold rounded-sm uppercase tracking-wider">CEH</span>
+                                <span class="px-3 py-1 bg-black/50 border border-[#00ffcc] text-[#00ffcc] text-xs font-bold rounded-sm uppercase tracking-wider">Security+</span>
+                                <span class="px-3 py-1 bg-black/50 border border-[#00ffcc] text-[#00ffcc] text-xs font-bold rounded-sm uppercase tracking-wider">AWS SysOps Admin</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-[#0088ff] mono text-sm mb-2 uppercase flex justify-between">
+                                <span>[ Core Tech ]</span> <span class="text-xs">Active</span>
+                            </p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-[#0f172a] border border-gray-600 text-gray-300 text-xs rounded-sm">Palo Alto</span>
+                                <span class="px-3 py-1 bg-[#0f172a] border border-gray-600 text-gray-300 text-xs rounded-sm">AWS Cloud Security</span>
+                                <span class="px-3 py-1 bg-[#0f172a] border border-gray-600 text-gray-300 text-xs rounded-sm">Splunk</span>
+                                <span class="px-3 py-1 bg-[#0f172a] border border-gray-600 text-gray-300 text-xs rounded-sm">Tenable</span>
+                                <span class="px-3 py-1 bg-[#0f172a] border border-gray-600 text-gray-300 text-xs rounded-sm">Wireshark</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Homelab & Projects (New Section) -->
+                <section class="physics-item p-6 glass-panel relative overflow-hidden group border-b-2 border-b-[#00ffcc]">
+                    <!-- Background Grid Effect -->
+                    <div class="absolute inset-0 opacity-10 background-grid pointer-events-none"></div>
+                    
+                    <h3 class="text-xl neon-text-green mb-4 mono uppercase relative z-10"><i class="fa-solid fa-server mr-2"></i> Homelab & Infrastructure</h3>
+                    
+                    <div class="space-y-3 relative z-10 text-gray-300 text-sm">
+                        <div class="flex items-start gap-3 bg-black/40 p-3 rounded border border-gray-800 hover:border-[#00ffcc]/50 transition-colors">
+                            <i class="fa-solid fa-shield-halved mt-1 text-[#0088ff]"></i>
+                            <div>
+                                <strong class="text-white block mb-1">Enterprise Architecture Simulation</strong>
+                                <p>Engineered comprehensive homelab environments to deploy, test, and validate security postures against advanced persistent threats.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-black/40 p-3 rounded border border-gray-800 hover:border-[#00ffcc]/50 transition-colors">
+                            <i class="fa-solid fa-certificate mt-1 text-[#0088ff]"></i>
+                            <div>
+                                <strong class="text-white block mb-1">PKI & Firewall Management</strong>
+                                <p>Automated SSL certificate renewals across domains and practiced centralized firewall policy management replicating enterprise Panorama setups.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Main Column (Experience) -->
+            <div class="lg:col-span-7 space-y-6 flex-col flex">
+                
+                <section class="h-full flex flex-col">
+                    <h3 class="text-xl neon-text-green mb-4 mono uppercase physics-item px-2"><i class="fa-solid fa-briefcase mr-2"></i> Mission Logs (Experience)</h3>
+                    
+                    <div class="space-y-4 flex-1">
+                        
+                        <!-- Experience Card -->
+                        <article class="physics-item p-5 glass-panel border-l-4 border-l-[#00ffcc] hover:bg-white/5 transition-colors relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-2 opacity-10"><i class="fa-solid fa-fire-extinguisher text-6xl"></i></div>
+                            <div class="flex justify-between items-start mb-1">
+                                <h4 class="text-xl font-bold text-white relative z-10">Academy Sports & Outdoors</h4>
+                                <div class="bg-black/60 border border-gray-700 px-2 py-1 rounded flex flex-col items-end shrink-0 relative z-10">
+                                    <span class="text-[10px] text-gray-400 mono leading-none uppercase">NASDAQ: <strong class="text-white">ASO</strong></span>
+                                    <div class="text-xs font-bold font-mono text-green-400 flex items-center mt-0.5">
+                                        <span id="aso-price">54.32</span> <i class="fa-solid fa-caret-up ml-1 text-[10px]"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-[#00ffcc] mono text-sm uppercase tracking-wider mb-3 relative z-10">Cybersecurity Engineer</p>
+                            <p class="text-gray-300 text-sm leading-relaxed relative z-10">
+                                Configured and managed <strong class="text-white">Palo Alto firewalls</strong> centrally through <strong class="text-white">Panorama M-500</strong>. Implemented Global Protect VPNs ensuring secure remote access. Administered privileged access management (PAM) utilizing <strong class="text-white">CyberArk</strong>, significantly reducing insider threat vectors.
+                            </p>
+                            
+                            <!-- Mock Stock Ticker Script -->
+                            <script>
+                                setInterval(() => {
+                                    const priceEl = document.getElementById('aso-price');
+                                    let current = parseFloat(priceEl.innerText);
+                                    let change = (Math.random() * 0.4) - 0.15; // slight upward bias
+                                    let newPrice = (current + change).toFixed(2);
+                                    priceEl.innerText = newPrice;
+                                    
+                                    const icon = priceEl.nextElementSibling;
+                                    if (change >= 0) {
+                                        priceEl.parentElement.className = 'text-xs font-bold font-mono text-green-400 flex items-center mt-0.5';
+                                        icon.className = 'fa-solid fa-caret-up ml-1 text-[10px]';
+                                    } else {
+                                        priceEl.parentElement.className = 'text-xs font-bold font-mono text-red-500 flex items-center mt-0.5';
+                                        icon.className = 'fa-solid fa-caret-down ml-1 text-[10px]';
+                                    }
+                                }, 3000);
+                            </script>
+                        </article>
+
+                        <!-- Experience Card -->
+                        <article class="physics-item p-5 glass-panel border-l-4 border-l-[#0088ff] hover:bg-white/5 transition-colors relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-2 opacity-10"><i class="fa-solid fa-building-columns text-6xl"></i></div>
+                            <div class="flex justify-between items-start mb-1">
+                                <h4 class="text-xl font-bold text-white relative z-10">JP Morgan Chase</h4>
+                                <div class="bg-black/60 border border-gray-700 px-2 py-1 rounded flex flex-col items-end shrink-0 relative z-10">
+                                    <span class="text-[10px] text-gray-400 mono leading-none uppercase">NYSE: <strong class="text-white">JPM</strong></span>
+                                    <div class="text-xs font-bold font-mono text-green-400 flex items-center mt-0.5">
+                                        <span id="jpm-price">196.48</span> <i class="fa-solid fa-caret-up ml-1 text-[10px]"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-[#0088ff] mono text-sm uppercase tracking-wider mb-3 relative z-10">Sr. Cybersecurity Consultant</p>
+                            <p class="text-gray-300 text-sm leading-relaxed relative z-10">
+                                Automated vulnerability detection workflows and compliance reporting by integrating <strong class="text-white">Splunk</strong> analytics with <strong class="text-white">Qualys</strong> vulnerability management suites, enhancing incident detection speeds across financial perimeters.
+                            </p>
+
+                            <!-- Mock Stock Ticker Script -->
+                            <script>
+                                setInterval(() => {
+                                    const priceEl = document.getElementById('jpm-price');
+                                    let current = parseFloat(priceEl.innerText);
+                                    let change = (Math.random() * 0.8) - 0.35; // slight upward bias
+                                    let newPrice = (current + change).toFixed(2);
+                                    priceEl.innerText = newPrice;
+                                    
+                                    const icon = priceEl.nextElementSibling;
+                                    if (change >= 0) {
+                                        priceEl.parentElement.className = 'text-xs font-bold font-mono text-green-400 flex items-center mt-0.5';
+                                        icon.className = 'fa-solid fa-caret-up ml-1 text-[10px]';
+                                    } else {
+                                        priceEl.parentElement.className = 'text-xs font-bold font-mono text-red-500 flex items-center mt-0.5';
+                                        icon.className = 'fa-solid fa-caret-down ml-1 text-[10px]';
+                                    }
+                                }, 3500);
+                            </script>
+                        </article>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- MATRIX DIGITAL RAIN SCRIPT -->
+    <script>
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas to full screen
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Characters to display (Katakana + Latin + Numerals)
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ'.split('');
+
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+
+        // Array for the drops - one per column
+        const drops = [];
+        for (let x = 0; x < columns; x++) {
+            drops[x] = Math.random() * -100; // Start off-screen
+        }
+
+        function drawMatrix() {
+            // Translucent black background creates the "fading tail" effect
+            ctx.fillStyle = 'rgba(3, 7, 18, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#00ffcc'; // Cyberpunk green/cyan text
+            ctx.font = fontSize + 'px "Share Tech Mono"'; // Match our monospace font
+
+            for (let i = 0; i < drops.length; i++) {
+                // Pick a random character
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                
+                // Draw the character
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                // Send drop back to top randomly after it crosses the screen
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+
+                // Move drop down
+                drops[i]++;
+            }
+        }
+
+        // Run the matrix animation at roughly 33fps
+        setInterval(drawMatrix, 35);
+
+        // Handle resize for Matrix
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            // Recalculate columns if screen gets wider
+            const newCols = canvas.width / fontSize;
+            if (newCols > drops.length) {
+                for (let x = drops.length; x < newCols; x++) {
+                    drops[x] = Math.random() * -100;
+                }
+            }
+        });
+    </script>
+
+    <!-- LIVE CYBER NEWS SCRIPT -->
+    <script>
+        async function fetchCyberNews() {
+            const container = document.getElementById('news-container');
+            // Using a free RSS to JSON converter hitting The Hacker News RSS feed
+            const rssUrl = encodeURIComponent('https://feeds.feedburner.com/TheHackersNews');
+            const apiEndpoint = `https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`;
+
+            try {
+                const response = await fetch(apiEndpoint);
+                const data = await response.json();
+
+                if (data.status === 'ok') {
+                    container.innerHTML = ''; // clear loading state
+                    
+                    // Take more items to make the scrolling ticker look full
+                    const articles = data.items.slice(0, 6);
+                    const escapeStr = (s) => s.replace(/[&<>'"]/g, t => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t]));
+                    
+                    articles.forEach((item, index) => {
+                        // Extract just the date part
+                        const date = new Date(item.pubDate).toLocaleDateString();
+                        
+                        const articleHtml = `
+                            <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="block p-3 bg-black/80 border border-[#ff003c]/30 rounded hover:border-[#ff003c] transition-colors group">
+                                <div class="flex items-start justify-between gap-2">
+                                    <h5 class="text-xs text-white font-medium line-clamp-2 group-hover:text-[#ff003c] transition-colors">${escapeStr(item.title)}</h5>
+                                    <span class="mono text-[10px] text-gray-500 shrink-0">${escapeStr(date)}</span>
+                                </div>
+                            </a>
+                        `;
+                        container.innerHTML += articleHtml;
+                    });
+                    
+                    // Duplicate for infinite scroll loop feel
+                    container.innerHTML += container.innerHTML;
+                } else {
+                    throw new Error('Feed status not OK');
+                }
+            } catch (error) {
+                console.error("Failed to fetch news:", error);
+                container.innerHTML = `
+                    <div class="h-full flex items-center justify-center text-gray-500 mono text-xs text-center border border-dashed border-gray-700 p-4 rounded">
+                        Failed to intercept external signals.<br>Systems isolated.
+                    </div>
+                `;
+            }
+        }
+
+        fetchCyberNews();
+    </script>
+
+    <!-- ANTI-GRAVITY SCRIPT (MATTER.JS) -->
+    <script>
+        let isMatterActive = false;
+        let isZeroGravity = false;
+        let pEngine = null;
+
+        function toggleGravity() {
+            const btn = document.getElementById('gravity-btn');
+
+            if (!isMatterActive) {
+                // First click: Initialize Physics Engine
+                window.scrollTo({ top: 0, behavior: 'auto' });
+                btn.innerHTML = '<i class="fa-solid fa-satellite mr-2"></i> [ ZERO-G OVERRIDE ]';
+                btn.classList.replace('text-[#ff003c]', 'text-[#00ffcc]');
+                btn.classList.replace('border-[#ff003c]', 'border-[#00ffcc]');
+                btn.classList.replace('hover:bg-[#ff003c]', 'hover:bg-[#00ffcc]');
+                
+                setTimeout(() => {
+                    activateMatterJs();
+                    isMatterActive = true;
+                }, 50);
+            } else {
+                // Subsequent clicks: Toggle gravity amount
+                if (isZeroGravity) {
+                    // Turn Gravity ON (Falling)
+                    pEngine.world.gravity.y = 1;
+                    isZeroGravity = false;
+                    btn.innerHTML = '<i class="fa-solid fa-satellite mr-2"></i> [ ZERO-G OVERRIDE ]';
+                    btn.classList.replace('text-[#ff003c]', 'text-[#00ffcc]');
+                    btn.classList.replace('border-[#ff003c]', 'border-[#00ffcc]');
+                    btn.classList.replace('hover:bg-[#ff003c]', 'hover:bg-[#00ffcc]');
+                } else {
+                    // Turn Gravity OFF (Floating)
+                    pEngine.world.gravity.y = 0;
+                    isZeroGravity = true;
+                    btn.innerHTML = '<i class="fa-solid fa-arrow-down mr-2"></i> [ RESTORE GRAVITY ]';
+                    btn.classList.replace('text-[#00ffcc]', 'text-[#ff003c]');
+                    btn.classList.replace('border-[#00ffcc]', 'border-[#ff003c]');
+                    btn.classList.replace('hover:bg-[#00ffcc]', 'hover:bg-[#ff003c]');
+                }
+            }
+        }
+
+        function activateMatterJs() {
+            // Lock scrolling on viewport
+            document.documentElement.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden';
+
+            const { Engine, Render, Runner, Bodies, Composite, Mouse, MouseConstraint, Events, Body } = Matter;
+
+            pEngine = Engine.create();
+            pEngine.world.gravity.y = 1;
+
+            const renderWidth = window.innerWidth;
+            const renderHeight = window.innerHeight;
+
+            const render = Render.create({
+                element: document.body,
+                engine: pEngine,
+                options: {
+                    width: renderWidth,
+                    height: renderHeight,
+                    wireframes: false,
+                    background: 'transparent'
+                }
+            });
+
+            // The matter canvas sits in front of all HTML and captures mouse drag events.
+            render.canvas.className = 'interactive-canvas';
+            render.canvas.style.pointerEvents = 'auto'; 
+            render.context.globalAlpha = 0;
+
+            const items = document.querySelectorAll('.physics-item');
+            const bodiesMap = [];
+
+            // Measure and create physical bodies
+            items.forEach((el) => {
+                const rect = el.getBoundingClientRect();
+                if (rect.width === 0 || rect.height === 0) return;
+
+                const left = rect.left;
+                const top = rect.top;
+
+                const body = Bodies.rectangle(
+                    left + rect.width / 2, 
+                    top + rect.height / 2, 
+                    rect.width, 
+                    rect.height, 
+                    { 
+                        restitution: 0.6, // Bounce
+                        friction: 0.1,
+                        frictionAir: 0.02,
+                        density: 0.01,
+                        render: { visible: false } 
+                    }
+                );
+
+                bodiesMap.push({ element: el, body: body, width: rect.width, height: rect.height });
+            });
+
+            // Make HTML absolute and attach to bodies
+            bodiesMap.forEach(item => {
+                const el = item.element;
+                el.style.width = item.width + 'px';
+                el.style.height = item.height + 'px';
+                el.style.margin = '0';
+                
+                document.body.appendChild(el);
+
+                el.style.position = 'absolute';
+                el.style.top = '0px';
+                el.style.left = '0px';
+                el.style.zIndex = '50';
+                el.style.pointerEvents = 'none';
+
+                Composite.add(pEngine.world, item.body);
+            });
+
+            document.getElementById('main-container').style.display = 'none';
+
+            // Walls
+            const wallOptions = { isStatic: true, render: { visible: false } };
+            const t = 100;
+            const ground = Bodies.rectangle(renderWidth / 2, renderHeight + t/2, renderWidth * 2, t, wallOptions);
+            const ceiling = Bodies.rectangle(renderWidth / 2, -t/2, renderWidth * 2, t, wallOptions);
+            const leftWall = Bodies.rectangle(-t/2, renderHeight / 2, t, renderHeight * 2, wallOptions);
+            const rightWall = Bodies.rectangle(renderWidth + t/2, renderHeight / 2, t, renderHeight * 2, wallOptions);
+
+            Composite.add(pEngine.world, [ground, ceiling, leftWall, rightWall]);
+
+            // Mouse interaction 
+            const mouse = Mouse.create(render.canvas);
+            const mouseConstraint = MouseConstraint.create(pEngine, {
+                mouse: mouse,
+                constraint: { stiffness: 0.2, render: { visible: false } }
+            });
+            Composite.add(pEngine.world, mouseConstraint);
+            render.mouse = mouse;
+
+            Render.run(render);
+            const runner = Runner.create();
+            Runner.run(runner, pEngine);
+
+            // Sync HTML to physics
+            Events.on(pEngine, 'afterUpdate', function() {
+                bodiesMap.forEach(item => {
+                    const x = item.body.position.x - item.width / 2;
+                    const y = item.body.position.y - item.height / 2;
+                    const angle = item.body.angle;
+                    item.element.style.transform = `translate(${x}px, ${y}px) rotate(${angle}rad)`;
+                });
+            });
+
+            // Handle Resize bounds
+            window.addEventListener('resize', () => {
+                const w = window.innerWidth;
+                const h = window.innerHeight;
+                render.canvas.width = w;
+                render.canvas.height = h;
+                Body.setPosition(ground, { x: w / 2, y: h + t/2 });
+                Body.setPosition(rightWall, { x: w + t/2, y: h / 2 });
+                Body.setPosition(ceiling, { x: w / 2, y: -t/2 });
+            });
+        }
+    </script>
+</body>
+</html>
