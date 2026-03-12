@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SK Cyberops - Security Admin Portal</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkblue: '#040d1a',
+                        neon: '#00ffcc',
+                        neonblue: '#0088ff',
+                        glassbg: 'rgba(10, 15, 30, 0.7)',
+                    },
+                    fontFamily: {
+                        mono: ['JetBrains Mono', 'Menlo', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background-color: #040d1a;
+            color: #e2e8f0;
+            background-image: radial-gradient(circle at 15% 50%, rgba(0, 255, 204, 0.03) 0%, transparent 50%), radial-gradient(circle at 85% 30%, rgba(0, 136, 255, 0.03) 0%, transparent 50%);
+            background-attachment: fixed;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(10, 15, 30, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+        input, select {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #0088ff;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <header class="mb-8 flex items-center gap-4 border-b border-gray-800 pb-4">
+            <i class="fa-solid fa-lock text-[#00ffcc] text-3xl"></i>
+            <div>
+                <h1 class="text-3xl font-bold text-white font-mono uppercase tracking-widest">Administrator Override</h1>
+                <p class="text-sm text-gray-400">Gemini Automated Knowledge Base Injection</p>
+            </div>
+        </header>
+
+        <!-- SECURITY WARNING -->
+        <div class="glass-panel p-4 mb-8 rounded-lg border-l-4 border-l-[#ef4444] bg-red-900/10">
+            <h3 class="text-red-400 font-bold mb-1"><i class="fa-solid fa-triangle-exclamation mr-2"></i> Security Imperative</h3>
+            <p class="text-sm text-gray-300">This URL is publicly accessible, but API keys are <strong>never</strong> recorded, saved, or hardcoded. You must provide temporary session keys below to authenticate with Google AI and GitHub. Treat your API keys like passwords.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <!-- CONFIGURATION PANEL -->
+            <div class="glass-panel p-6 rounded-lg">
+                <h2 class="text-[#0088ff] font-mono text-lg mb-4 border-b border-gray-800 pb-2"><i class="fa-solid fa-key mr-2"></i> 1. Authentication</h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1 uppercase tracking-wider">Gemini API Key</label>
+                        <input type="password" id="gemini-key" class="w-full px-3 py-2 rounded text-sm font-mono" placeholder="AIzaSy...">
+                        <p class="text-[10px] text-gray-500 mt-1">Required to generate article content.</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1 uppercase tracking-wider">GitHub Fine-Grained Token (PAT)</label>
+                        <input type="password" id="github-token" class="w-full px-3 py-2 rounded text-sm font-mono" placeholder="github_pat_...">
+                        <p class="text-[10px] text-gray-500 mt-1">Required to commit files to saikiranmandiga/Cybersecurity. Must have 'Contents: Write' permission.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GENERATOR PANEL -->
+            <div class="glass-panel p-6 rounded-lg border border-[#00ffcc]/30">
+                <h2 class="text-[#00ffcc] font-mono text-lg mb-4 border-b border-gray-800 pb-2"><i class="fa-solid fa-microchip mr-2"></i> 2. Operations</h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1 uppercase tracking-wider">Requested Topic</label>
+                        <input type="text" id="article-topic" class="w-full px-3 py-2 rounded text-sm font-mono" placeholder="e.g. Memory Forensics">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1 uppercase tracking-wider">Category</label>
+                            <select id="article-category" class="w-full px-3 py-2 rounded text-sm font-mono appearance-none">
+                                <option>Threat Intel</option>
+                                <option>Incident Response</option>
+                                <option>Network Security</option>
+                                <option>Cryptography</option>
+                                <option>SecOps</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1 uppercase tracking-wider">Icon</label>
+                            <select id="article-icon" class="w-full px-3 py-2 rounded text-sm font-mono appearance-none">
+                                <option value="fa-bug">Bug</option>
+                                <option value="fa-shield-halved">Shield</option>
+                                <option value="fa-network-wired">Network</option>
+                                <option value="fa-skull-crossbones">Skull</option>
+                                <option value="fa-microchip">Chip</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button id="btn-generate" class="w-full mt-4 bg-[#00ffcc]/20 hover:bg-[#00ffcc]/30 text-[#00ffcc] border border-[#00ffcc]/50 py-3 rounded font-mono font-bold transition-colors">
+                        <i class="fa-solid fa-bolt mr-2"></i> Initiate Generation Sequence
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- LOG TERMINAL -->
+        <div class="glass-panel mt-8 p-6 rounded-lg relative">
+            <h2 class="text-white font-mono text-sm mb-4 border-b border-gray-800 pb-2"><i class="fa-solid fa-terminal mr-2"></i> Operations Terminal</h2>
+            <div id="terminal-output" class="font-mono text-xs text-gray-400 h-48 overflow-y-auto space-y-2 p-2 bg-black/50 rounded border border-gray-800">
+                <div class="text-[#0088ff]">> Warning: Unauthorized access is monitored and logged.</div>
+                <div>> Ready for API injection...</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="kb-generator.js"></script>
+</body>
+</html>
