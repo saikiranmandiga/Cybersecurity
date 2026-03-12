@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sahasra Saikiran Mandiga | Cyber Operations Center</title>
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -187,7 +188,7 @@
                 
                 <div class="flex-1 overflow-hidden relative" style="height: 250px;">
                     <!-- Scroll wrapper for css animation -->
-                    <div id="news-container" class="space-y-3 absolute w-full transition-transform" style="animation: scrollUp 40s linear infinite;">
+                    <div id="news-container" class="space-y-3 absolute w-full transition-transform" style="animation: scrollUp 20s linear infinite;">
                         <!-- Loading State -->
                         <div class="flex items-center justify-center text-[#ff003c] mono h-[250px]">
                             <span>Intercepting signals...</span>
@@ -197,8 +198,8 @@
                 
                 <style>
                     @keyframes scrollUp {
-                        0% { transform: translateY(100%); }
-                        100% { transform: translateY(-100%); }
+                        0% { transform: translateY(0); }
+                        100% { transform: translateY(-50%); }
                     }
                     /* Pause animation on hover so user can read/click */
                     #news-container:hover {
