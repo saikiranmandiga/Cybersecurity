@@ -143,6 +143,15 @@ const portfolioConfig = {
             date: "Mar 12, 2026",
             file: "articles/fortigate-architecture-packet-flow.html",
             icon: "fa-network-wired"
+        },
+        {
+            id: "how-paloalo-firewall-are-next-gen-firewalls-using-user-id-content-id-app-id-technology-compared-to-other-competitors",
+            title: "How Paloalo firewall are next gen firewalls using user-id content-id app-id technology compared to other competitors?",
+            category: "Network Security",
+            readTime: "8 min read",
+            date: "Mar 12, 2026",
+            file: "articles/how-paloalo-firewall-are-next-gen-firewalls-using-user-id-content-id-app-id-technology-compared-to-other-competitors.html",
+            icon: "fa-network-wired"
         }
     ]
 };
