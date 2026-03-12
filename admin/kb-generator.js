@@ -79,7 +79,10 @@ btnGenerate.addEventListener('click', async () => {
             })
         });
 
-        if (!geminiRes.ok) throw new Error(`Gemini API Failed: ${geminiRes.statusText}`);
+        if (!geminiRes.ok) {
+            const errorData = await geminiRes.text();
+            throw new Error(`Gemini API Failed: HTTP ${geminiRes.status} - ${errorData}`);
+        }
         const geminiData = await geminiRes.json();
         let generatedHtml = geminiData.candidates[0].content.parts[0].text;
         
