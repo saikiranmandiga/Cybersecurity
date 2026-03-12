@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Base - SK Cyberops</title>
+    
+    <!-- Central Portfolio Configuration -->
+    <script src="./config.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkblue: '#040d1a',
+                        neon: '#00ffcc',
+                        neonblue: '#0088ff',
+                        glassbg: 'rgba(10, 15, 30, 0.7)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Menlo', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Prism.js for Code Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-twilight.min.css" rel="stylesheet" />
+    
+    <style>
+        body {
+            background-color: #040d1a;
+            color: #e2e8f0;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 255, 204, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(0, 136, 255, 0.03) 0%, transparent 50%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        .glass-panel {
+            background: rgba(10, 15, 30, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .neon-text-green {
+            color: #00ffcc;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+        }
+
+        /* Markdown-style content formatting for Gemini generated text */
+        .gemini-content h2 {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .gemini-content h3 {
+            color: #0088ff;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .gemini-content p {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+            color: #cbd5e1;
+        }
+
+        .gemini-content ul, .gemini-content ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            color: #cbd5e1;
+        }
+
+        .gemini-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .gemini-content ul { list-style-type: disc; }
+        .gemini-content ul li::marker { color: #0088ff; }
+
+        /* Tech Blocks resembling reference site */
+        .tech-block {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #0088ff;
+        }
+        
+        .tech-block.error { border-left-color: #ef4444; }
+        .tech-block.success { border-left-color: #10b981; }
+        .tech-block.warning { border-left-color: #f59e0b; }
+
+        .tech-block h4 {
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        /* Inline code */
+        .gemini-content p code, .gemini-content li code {
+            background: rgba(0, 0, 0, 0.4);
+            color: #00ffcc;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            border: 1px solid rgba(0,255,204,0.2);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 glass-panel border-b-0 border-t-0 border-l-0 border-r-0 border-b border-gray-800/50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo Binding via config.js -->
+                <div class="flex-shrink-0 flex items-center space-x-3 cursor-pointer" onclick="window.location.href='index.html'">
+                    <img src="./logo.svg" alt="SK Cyberops Logo" class="w-8 h-8 md:w-10 md:h-10">
+                    <span id="nav-cfg-name" class="font-bold text-white text-lg md:text-xl tracking-widest font-mono uppercase">SK CYBEROPS</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8 font-mono text-sm">
+                        <a href="index.html" class="text-gray-300 hover:text-[#00ffcc] transition-colors"><i class="fa-solid fa-house mr-1"></i> Dashboard</a>
+                        <a href="threat-map.html" class="text-gray-300 hover:text-[#00ffcc] transition-colors"><i class="fa-solid fa-earth-americas mr-1"></i> Global Threats</a>
+                        <a href="soc-simulator.html" class="text-gray-300 hover:text-[#00ffcc] transition-colors"><i class="fa-solid fa-shield-virus mr-1"></i> SOC Simulator</a>
+                        <a href="knowledge-base.html" class="text-[#00ffcc] border-b-2 border-[#00ffcc] pb-1"><i class="fa-solid fa-book-journal-whills mr-1"></i> Knowledge Base</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-8">
+        
+        <!-- Sidebar Navigation (Table of Contents / Topic List) -->
+        <aside class="w-full lg:w-1/4 hidden lg:block">
+            <div class="sticky top-28 glass-panel p-5 rounded-lg">
+                <h3 class="text-white font-mono uppercase text-sm mb-4 pb-2 border-b border-gray-800 tracking-wider"><i class="fa-solid fa-folder-tree mr-2 text-[#0088ff]"></i> Directory</h3>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li>
+                        <button class="w-full text-left hover:text-white hover:bg-white/5 py-2 px-3 rounded transition-colors text-[#00ffcc] bg-white/5">
+                            <i class="fa-solid fa-file-code mr-2 opacity-70"></i> Certificate File Formats
+                        </button>
+                    </li>
+                    <li>
+                        <button class="w-full text-left hover:text-white hover:bg-white/5 py-2 px-3 rounded transition-colors">
+                            <i class="fa-solid fa-network-wired mr-2 opacity-70"></i> PCAP Analysis Basics
+                        </button>
+                    </li>
+                    <li>
+                        <button class="w-full text-left hover:text-white hover:bg-white/5 py-2 px-3 rounded transition-colors">
+                            <i class="fa-solid fa-shield-halved mr-2 opacity-70"></i> Firewall Rule Syntax
+                        </button>
+                    </li>
+                    <li>
+                        <button class="w-full text-left hover:text-white hover:bg-white/5 py-2 px-3 rounded transition-colors mt-4 border-t border-gray-800 pt-4">
+                            <i class="fa-solid fa-plus mr-2 opacity-70"></i> Add New Topic
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Article Area -->
+        <article class="w-full lg:w-3/4">
+            
+            <!-- Article Header -->
+            <header class="mb-8 border-b border-gray-800/50 pb-6">
+                <div class="flex items-center gap-3 mb-4 text-xs font-mono">
+                    <span class="bg-[#0088ff]/20 text-[#0088ff] border border-[#0088ff]/30 px-2 py-1 rounded">Cryptography</span>
+                    <span class="text-gray-500"><i class="fa-regular fa-clock mr-1"></i> 10 min read</span>
+                    <span class="text-gray-500"><i class="fa-regular fa-calendar mr-1"></i> Oct 24, 2023</span>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">Understanding Certificate File Formats</h1>
+                <p class="text-lg text-gray-400">A comprehensive guide on PEM, DER, PFX/P12, and JKS encodings and how to convert between them securely.</p>
+                
+                <div class="mt-6 flex gap-4">
+                    <button class="text-sm bg-white/5 hover:bg-white/10 border border-gray-700 hover:border-gray-500 text-gray-300 py-1.5 px-4 rounded transition-colors">
+                        <i class="fa-solid fa-share-nodes mr-2"></i> Share
+                    </button>
+                    <button class="text-sm bg-white/5 hover:bg-white/10 border border-gray-700 hover:border-gray-500 text-gray-300 py-1.5 px-4 rounded transition-colors">
+                        <i class="fa-solid fa-link mr-2"></i> Copy Link
+                    </button>
+                </div>
+            </header>
+
+            <!-- Gemini Generated Content Area -->
+            <!-- Instructions for USER: Paste the Markdown from Gemini directly inside this container -->
+            <div class="gemini-content space-y-6">
+                
+                <p>When working with SSL/TLS and PKI infrastructure, dealing with various certificate file extensions can be confusing. The core difference usually boils down to whether the data is Base64 encoded (ASCII) or strictly Binary.</p>
+
+                <h2>Format Comparison Overview</h2>
+                
+                <!-- Example of a 'Tech Block' for structuring technical comparisons -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+                    <div class="tech-block m-0">
+                        <h4><i class="fa-regular fa-file-lines text-[#0088ff] mr-2"></i> PEM (Privacy Enhanced Mail)</h4>
+                        <ul class="text-sm mt-3 space-y-1 text-gray-400">
+                            <li><strong>Encoding:</strong> Base64 (ASCII)</li>
+                            <li><strong>Extensions:</strong> <code>.pem</code>, <code>.crt</code>, <code>.cer</code>, <code>.key</code></li>
+                            <li><strong>Contains:</strong> Single cert or key</li>
+                            <li><strong>Readable:</strong> Yes (open in Notepad)</li>
+                        </ul>
+                    </div>
+                    <div class="tech-block m-0" style="border-left-color: #f59e0b;">
+                        <h4><i class="fa-solid fa-lock text-[#f59e0b] mr-2"></i> PFX / P12 (PKCS#12)</h4>
+                        <ul class="text-sm mt-3 space-y-1 text-gray-400">
+                            <li><strong>Encoding:</strong> Binary (Encrypted)</li>
+                            <li><strong>Extensions:</strong> <code>.pfx</code>, <code>.p12</code></li>
+                            <li><strong>Contains:</strong> Cert + PrivKey + Chain</li>
+                            <li><strong>Readable:</strong> No (requires password)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h2>OpenSSL Conversion Paths</h2>
+                <p>Use the following commands to convert between formats. Make sure you have OpenSSL installed.</p>
+
+                <!-- Example of an OpenSSL Command Block -->
+                <div class="tech-block success">
+                    <h4 class="text-[#10b981] mb-2">Convert PEM to DER</h4>
+                    <pre><code class="language-bash">openssl x509 -outform der -in cert.pem -out cert.der</code></pre>
+                </div>
+
+                <div class="tech-block">
+                    <h4>Extract Public Key from PFX</h4>
+                    <p class="text-sm text-gray-400 mb-2">You will be prompted for the import password.</p>
+                    <pre><code class="language-bash">openssl pkcs12 -in bundle.pfx -clcerts -nokeys -out cert.pem</code></pre>
+                </div>
+
+                <h2>Common Errors & Troubleshooting</h2>
+                <p>If you encounter issues loading certificates into a load balancer or web server, refer to these common errors.</p>
+
+                <!-- Example of Troubleshooting Blocks -->
+                <div class="tech-block error">
+                    <h4 class="text-red-400">error:0906D06C:PEM routines:PEM_read_bio:no start line</h4>
+                    <p class="text-sm text-gray-300 mt-2"><strong>Cause:</strong> OpenSSL expected a PEM format but the file is binary (DER) or corrupted.</p>
+                    <p class="text-sm text-[#00ffcc] mt-1 font-mono"><strong>Fix:</strong> Convert DER to PEM using: `openssl x509 -inform DER -in cert.der -out cert.pem`</p>
+                </div>
+
+            </div>
+
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800/50 bg-black/40 mt-12 py-8 text-center text-sm font-mono text-gray-500">
+        <p>SK Cyberops Knowledge Base &copy; 2024</p>
+        <p class="mt-2 text-xs opacity-50">Content optimized for Gemini injection.</p>
+    </footer>
+
+    <!-- Prism.js for Code Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    
+    <!-- Config Binding Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if(window.portfolioConfig) {
+                // Dynamically load the nav name if it exists in config
+                const navNameEL = document.getElementById('nav-cfg-name');
+                if(navNameEL && portfolioConfig.name) {
+                    navNameEL.innerText = "SK CYBEROPS"; // Keep branding instead of strict config name for navbar
+                }
+            }
+        });
+    </script>
+</body>
+</html>

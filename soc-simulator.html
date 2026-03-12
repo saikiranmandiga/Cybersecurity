@@ -60,9 +60,14 @@
 
     <!-- Top Nav -->
     <nav class="p-4 flex justify-between items-center border-b border-gray-800 bg-black/50 sticky top-0 z-50 backdrop-blur">
-        <a href="./index.html" class="text-[#00ffcc] hover:text-white mono text-sm flex items-center">
-            <i class="fa-solid fa-chevron-left mr-2"></i> Return to Main Profile
-        </a>
+        <div class="flex items-center gap-6">
+            <a href="./index.html" class="text-[#00ffcc] hover:text-white mono text-sm flex items-center">
+                <i class="fa-solid fa-chevron-left mr-2"></i> Return to Main Profile
+            </a>
+            <a href="./knowledge-base.html" class="text-gray-300 hover:text-[#00ffcc] mono text-sm flex items-center transition-colors">
+                <i class="fa-solid fa-book-journal-whills mr-2"></i> Knowledge Base
+            </a>
+        </div>
         <button onclick="toggleTerminal()" class="px-4 py-1.5 border border-[#00ffcc] text-[#00ffcc] hover:bg-[#00ffcc] hover:text-black mono text-sm rounded transition-all font-bold">
             [ INIT TERMINAL ]
         </button>
