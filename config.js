@@ -134,6 +134,15 @@ const portfolioConfig = {
             date: "Mar 12, 2026",
             file: "articles/devsecops-in-2026.html",
             icon: "fa-network-wired"
+        },
+        {
+            id: "fortigate-architecture-packet-flow",
+            title: "Fortigate Architecture & Packet FLow",
+            category: "Network Security",
+            readTime: "8 min read",
+            date: "Mar 12, 2026",
+            file: "articles/fortigate-architecture-packet-flow.html",
+            icon: "fa-network-wired"
         }
     ]
 };
