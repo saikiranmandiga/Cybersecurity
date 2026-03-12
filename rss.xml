@@ -5,8 +5,16 @@
     <link>https://skcyberops.com/knowledge-base.html</link>
     <description>Technical deep-dives, security research, and cyber intelligence reports from SK Cyberops.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 12 Mar 2026 11:55:00 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 12 Mar 2026 17:04:45 GMT</lastBuildDate>
     <atom:link href="https://skcyberops.com/rss.xml" rel="self" type="application/rss+xml" />
+
+    <item>
+        <title>DevSecops in 2026</title>
+        <link>https://skcyberops.com/articles/devsecops-in-2026.html</link>
+        <description>DevSecops in 2026 - Technical Intelligence Report.</description>
+        <pubDate>Thu, 12 Mar 2026 17:04:45 GMT</pubDate>
+        <guid>https://skcyberops.com/articles/devsecops-in-2026.html</guid>
+    </item>
 
     <item>
         <title>The 47-Day Certificate Timeline: Understanding SC-081v3</title>
