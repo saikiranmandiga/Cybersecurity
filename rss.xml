@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+    <title>SK Cyberops Intelligence Feed</title>
+    <link>https://skcyberops.com/knowledge-base.html</link>
+    <description>Technical deep-dives, security research, and cyber intelligence reports from SK Cyberops.</description>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 12 Mar 2026 11:55:00 -0500</lastBuildDate>
+    <atom:link href="https://skcyberops.com/rss.xml" rel="self" type="application/rss+xml" />
+
+    <item>
+        <title>The 47-Day Certificate Timeline: Understanding SC-081v3</title>
+        <link>https://skcyberops.com/articles/47-day-cert-timeline.html</link>
+        <description>Understanding the industry shift to 47-day TLS certificate validity and the impact on enterprise automation.</description>
+        <pubDate>Wed, 11 Mar 2026 00:00:00 -0500</pubDate>
+        <guid>https://skcyberops.com/articles/47-day-cert-timeline.html</guid>
+    </item>
+
+    <item>
+        <title>what is ADCS</title>
+        <link>https://skcyberops.com/articles/what-is-adcs.html</link>
+        <description>A deep dive into Active Directory Certificate Services (ADCS) and its role in enterprise PKI.</description>
+        <pubDate>Wed, 11 Mar 2026 00:00:00 -0500</pubDate>
+        <guid>https://skcyberops.com/articles/what-is-adcs.html</guid>
+    </item>
+
+    <item>
+        <title>Palo Alto Architecture &amp; Packet Flow</title>
+        <link>https://skcyberops.com/articles/Paloalto-packet-flow.html</link>
+        <description>Technical breakdown of Palo Alto Networks firewall architecture and single-pass parallel processing (SP3) packet flow.</description>
+        <pubDate>Wed, 11 Mar 2026 00:00:00 -0500</pubDate>
+        <guid>https://skcyberops.com/articles/Paloalto-packet-flow.html</guid>
+    </item>
+
+    <item>
+        <title>Firewall Rule Syntax</title>
+        <link>https://skcyberops.com/articles/firewall-syntax.html</link>
+        <description>A guide to standard firewall rule syntax and best practices for policy management.</description>
+        <pubDate>Wed, 15 Nov 2023 00:00:00 -0500</pubDate>
+        <guid>https://skcyberops.com/articles/firewall-syntax.html</guid>
+    </item>
+
+    <item>
+        <title>PCAP Analysis Basics</title>
+        <link>https://skcyberops.com/articles/pcap-analysis.html</link>
+        <description>Introduction to network traffic analysis using Wireshark and PCAP files.</description>
+        <pubDate>Thu, 02 Nov 2023 00:00:00 -0500</pubDate>
+        <guid>https://skcyberops.com/articles/pcap-analysis.html</guid>
+    </item>
+
+    <item>
+        <title>Understanding Certificate File Formats</title>
+        <link>https://skcyberops.com/articles/cert-formats.html</link>
+        <description>Decoding the differences between PEM, DER, CRT, and PFX certificate formats.</description>
+        <pubDate>Tue, 24 Oct 2023 00:00:00 -0500</pubDate>
+        <guid>https://skcyberops.com/articles/cert-formats.html</guid>
+    </item>
+
+</channel>
+</rss>

@@ -201,6 +201,43 @@ btnGenerate.addEventListener('click', async () => {
         });
 
         if (!indexPutRes.ok) throw new Error("Failed to increment cache buster in knowledge-base.html.");
+        
+        // --- 6. UPDATE RSS.XML ---
+        logAction(`Fetching rss.xml to update feed...`);
+        const rssGetRes = await fetch(`https://api.github.com/repos/saikiranmandiga/Cybersecurity/contents/rss.xml`, { headers: ghHeaders });
+        if (!rssGetRes.ok) throw new Error("Could not fetch rss.xml from repo.");
+        
+        const rssFileData = await rssGetRes.json();
+        let rssText = b64DecodeUnicode(rssFileData.content);
+        const rssSha = rssFileData.sha;
+
+        const rssDateTime = new Date().toUTCString();
+        const rssItem = `
+    <item>
+        <title>${topic}</title>
+        <link>https://skcyberops.com/articles/${slug}.html</link>
+        <description>${topic} - Technical Intelligence Report.</description>
+        <pubDate>${rssDateTime}</pubDate>
+        <guid>https://skcyberops.com/articles/${slug}.html</guid>
+    </item>`;
+
+        // Insert new item after <atom:link ... /> and update lastBuildDate
+        rssText = rssText.replace(/<lastBuildDate>.*?<\/lastBuildDate>/, `<lastBuildDate>${rssDateTime}</lastBuildDate>`);
+        rssText = rssText.replace(/(<atom:link.*? \/>)/, `$1\n${rssItem}`);
+
+        logAction(`Updating remote rss.xml with new article entry...`);
+        const rssPutRes = await fetch(`https://api.github.com/repos/saikiranmandiga/Cybersecurity/contents/rss.xml`, {
+            method: 'PUT',
+            headers: ghHeaders,
+            body: JSON.stringify({
+                message: `feat(kb): updated rss feed with ${slug}`,
+                content: b64EncodeUnicode(rssText),
+                sha: rssSha,
+                branch: 'main'
+            })
+        });
+
+        if (!rssPutRes.ok) throw new Error("Failed to update rss.xml on GitHub.");
 
         logAction(`All operations completed successfully! GitHub Actions is now building the site.`, "success");
         
