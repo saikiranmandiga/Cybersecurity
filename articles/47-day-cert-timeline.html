@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The 47-Day Certificate Timeline: Understanding SC-081v3 - SK Cyberops KB</title>
+    <link rel="icon" href="../logo.svg" type="image/svg+xml">
+    
+    <!-- Central Portfolio Configuration -->
+    <script src="../config.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkblue: '#040d1a',
+                        neon: '#00ffcc',
+                        neonblue: '#0088ff',
+                        glassbg: 'rgba(10, 15, 30, 0.7)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Menlo', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Prism.js for Code Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-twilight.min.css" rel="stylesheet" />
+    
+    <style>
+        body {
+            background-color: #040d1a;
+            color: #e2e8f0;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 255, 204, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(0, 136, 255, 0.03) 0%, transparent 50%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        .glass-panel {
+            background: rgba(10, 15, 30, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Markdown-style content formatting for Gemini generated text */
+        .gemini-content h2 {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .gemini-content h3 {
+            color: #0088ff;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .gemini-content p {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+            color: #cbd5e1;
+        }
+
+        .gemini-content ul, .gemini-content ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            color: #cbd5e1;
+        }
+
+        .gemini-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .gemini-content ul { list-style-type: disc; }
+        .gemini-content ul li::marker { color: #0088ff; }
+
+        /* Tech Blocks resembling reference site */
+        .tech-block {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #0088ff;
+        }
+        
+        .tech-block.error { border-left-color: #ef4444; }
+        .tech-block.success { border-left-color: #10b981; }
+        .tech-block.warning { border-left-color: #f59e0b; }
+
+        .tech-block h4 {
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        /* Inline code */
+        .gemini-content p code, .gemini-content li code {
+            background: rgba(0, 0, 0, 0.4);
+            color: #00ffcc;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            border: 1px solid rgba(0,255,204,0.2);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 glass-panel border-b-0 border-t-0 border-l-0 border-r-0 border-b border-gray-800/50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo Binding via config.js -->
+                <div class="flex-shrink-0 flex items-center space-x-3 cursor-pointer" onclick="window.location.href='../index.html'">
+                    <img src="../logo.svg" alt="SK Cyberops Logo" class="w-8 h-8 md:w-10 md:h-10">
+                    <span id="nav-cfg-name" class="font-bold text-white text-lg md:text-xl tracking-widest font-mono uppercase">SK CYBEROPS</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8 font-mono text-sm">
+                        <a href="../index.html" class="text-gray-300 hover:text-[#00ffcc] transition-colors"><i class="fa-solid fa-house mr-1"></i> Dashboard</a>
+                        <a href="../threat-map.html" class="text-gray-300 hover:text-[#00ffcc] transition-colors"><i class="fa-solid fa-earth-americas mr-1"></i> Global Threats</a>
+                        <a href="../soc-simulator.html" class="text-gray-300 hover:text-[#00ffcc] transition-colors"><i class="fa-solid fa-shield-virus mr-1"></i> SOC Simulator</a>
+                        <a href="../knowledge-base.html" class="text-[#00ffcc] border-b-2 border-[#00ffcc] pb-1"><i class="fa-solid fa-book-journal-whills mr-1"></i> Knowledge Base</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-8">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-full lg:w-1/4 hidden lg:block">
+            <div class="sticky top-28 glass-panel p-5 rounded-lg">
+                <a href="../knowledge-base.html" class="text-xs font-mono text-gray-500 hover:text-[#00ffcc] mb-6 inline-block transition-colors"><i class="fa-solid fa-arrow-left mr-1"></i> Back to Directory</a>
+                <h3 class="text-white font-mono uppercase text-sm mb-4 pb-2 border-b border-gray-800 tracking-wider"><i class="fa-solid fa-folder-tree mr-2 text-[#0088ff]"></i> Articles</h3>
+                <ul id="sidebar-directory" class="space-y-2 text-sm text-gray-400">
+                    <!-- Javascript populates this -->
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Article Area -->
+        <article class="w-full lg:w-3/4">
+            
+            <!-- Article Header -->
+            <header class="mb-8 border-b border-gray-800/50 pb-6">
+                <div class="flex items-center gap-3 mb-4 text-xs font-mono">
+                    <span class="bg-[#0088ff]/20 text-[#0088ff] border border-[#0088ff]/30 px-2 py-1 rounded uppercase">PKI & Security</span>
+                    <span class="text-gray-500"><i class="fa-regular fa-clock mr-1"></i> 6 min read</span>
+                    <span class="text-gray-500"><i class="fa-regular fa-calendar mr-1"></i> Mar 11, 2026</span>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">The 47-Day Certificate Timeline: Understanding SC-081v3</h1>
+                
+                <div class="mt-6 flex gap-4">
+                    <button class="text-sm bg-white/5 hover:bg-white/10 border border-gray-700 text-gray-300 py-1.5 px-4 rounded transition-colors" onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied!')">
+                        <i class="fa-solid fa-link mr-2"></i> Copy Link
+                    </button>
+                </div>
+            </header>
+
+            <!-- Gemini Generated Content Area -->
+            <div class="gemini-content space-y-6">
+                
+                <h2>Overview of SC-081v3</h2>
+                <p>
+                    The Certification Authority/Browser Forum (CA/B Forum) recently passed Ballot SC-081v3, a landmark decision that fundamentally reshapes the lifecycle of publicly-trusted TLS certificates. This ballot mandates a phased reduction in certificate validity from the current 398 days down to a maximum of <b>47 days</b> by 2029.
+                </p>
+                <p>
+                    This shift isn't just a policy change; it's a technical mandate for automation. In an environment where certificates expire every 47 days, manual renewal processes—no matter how well-documented—become a significant operational risk and a guaranteed path to service outages.
+                </p>
+
+                <h3>The Phased Rollout Schedule</h3>
+                <p>
+                    To give organizations time to adapt, the transition is divided into three distinct phases:
+                </p>
+                <ul>
+                    <li>
+                        <strong>Phase 1: 200 Days (Effective March 15, 2026)</strong><br>
+                        Maximum validity drops from 398 to 200 days (effectively 199 days). Organizations will move from annual to semi-annual renewal cadences.
+                    </li>
+                    <li>
+                        <strong>Phase 2: 100 Days (Effective March 15, 2027)</strong><br>
+                        Validity drops further to 100 days (effectively 99 days). This quarterly cadence is where manual processes typically begin to fail at scale.
+                    </li>
+                    <li>
+                        <strong>Phase 3: 47 Days (Effective March 15, 2029)</strong><br>
+                        The final target of 47 days (effectively 46 days). This necessitates ~8 renewals per year per certificate.
+                    </li>
+                </ul>
+
+                <div class="tech-block warning">
+                    <h4 class="text-[#f59e0b] mb-2">The Hidden Constraint: 10-Day DCV</h4>
+                    <p class="text-xs text-gray-400">
+                        Alongside the 47-day limit, Domain Control Validation (DCV) reuse is being slashed to just <b>10 days</b>. This means you must re-verify domain ownership for almost every single issuance, making DNS-01 or automated HTTP-01 validation mandatory.
+                    </p>
+                </div>
+
+                <h3>Why 47 Days?</h3>
+                <p>
+                    The number 47 was chosen carefully by browser vendors (primarily Apple and Google). It represents:
+                </p>
+                <p class="mono text-sm bg-black/30 p-2 rounded border border-gray-800">
+                    47 days = 31 days (max month) + 15 days (half month) + 1 day wiggle room.
+                </p>
+                <p>
+                    This allows for a clean "monthly" renewal cycle. If you renew at the two-thirds mark (the industry standard), you'll renew around day 30 or 31, aligning with monthly maintenance windows and automated billing cycles.
+                </p>
+
+                <h3>Operational Readiness Checklist</h3>
+                <p>
+                    To prepare for SC-081v3, Senior Security Engineers should focus on these immediate action items:
+                </p>
+                <div class="tech-block success">
+                    <h4 class="text-[#10b981] mb-2">Automation Strategy</h4>
+                    <ul class="text-sm space-y-1">
+                        <li>Standardize on <b>ACME (Automated Certificate Management Environment)</b> for all public endpoints.</li>
+                        <li>Implement <b>DNS-01 validation</b> via API-driven DNS providers (AWS Route53, Cloudflare, etc.) to handle the 10-day DCV limit.</li>
+                        <li>Deploy a <b>Certificate Lifecycle Management (CLM)</b> tool to gain 100% visibility into your cert inventory.</li>
+                    </ul>
+                </div>
+
+                <h3>The Security Rationale</h3>
+                <p>
+                    Browsers are pushing for shorter lifespans for several critical security reasons:
+                </p>
+                <ul>
+                    <li><strong>Broken Revocation:</strong> CRLs and OCSP are notoriously unreliable. Shorter validity periods act as a "natural revocation" mechanism.</li>
+                    <li><strong>Key Rotation:</strong> Forces regular rotation of private keys, limiting the window of exposure if a key is compromised.</li>
+                    <li><strong>Agility:</strong> Normalizes the process of replacing certificates, making it easier to respond to emergency events like Heartbleed or the transition to Post-Quantum Cryptography (PQC).</li>
+                </ul>
+
+                <p>
+                    In conclusion, the 47-day timeline is the end of "set it and forget it" PKI. For the modern CyberOps team, success in this new era is defined by the robustness of your automation pipelines.
+                </p>
+
+            </div>
+
+            <!-- Discussion Section -->
+            <section class="mt-16 pt-8 border-t border-gray-800">
+                <h3 class="text-xl neon-text-blue mb-8 mono uppercase"><i class="fa-solid fa-comments mr-2"></i> Mission Debrief (Comments)</h3>
+                <div id="disqus_thread"></div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800/50 bg-black/40 mt-12 py-8 text-center text-sm font-mono text-gray-500">
+        <p>SK Cyberops Knowledge Base &copy; 2024</p>
+    </footer>
+
+    <!-- Prism.js for Code Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    
+    <!-- Config Binding Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if(window.portfolioConfig) {
+                const navNameEL = document.getElementById('nav-cfg-name');
+                if(navNameEL && portfolioConfig.name) navNameEL.innerText = "SK CYBEROPS"; 
+
+                // Populate Sidebar Directory
+                const sidebarDir = document.getElementById('sidebar-directory');
+                if(sidebarDir && portfolioConfig.knowledgeBase) {
+                    const currentFile = window.location.pathname.split('/').pop();
+
+                    portfolioConfig.knowledgeBase.forEach(article => {
+                        const linkTarget = "../" + article.file;
+                        const isCurrent = article.file.endsWith(currentFile);
+                        const activeClass = isCurrent ? "text-[#00ffcc] bg-white/5" : "text-gray-400 hover:text-white hover:bg-white/5";
+
+                        sidebarDir.innerHTML += `
+                            <li>
+                                <a href="${linkTarget}" class="block w-full text-left py-2 px-3 rounded transition-colors ${activeClass}">
+                                    <i class="fa-solid ${article.icon} mr-2 opacity-70"></i> ${article.title}
+                                </a>
+                            </li>
+                        `;
+                    });
+                }
+            }
+        });
+    </script>
+
+    <!-- Disqus Comments Integration -->
+    <script>
+        var disqus_config = function () {
+            this.page.url = window.location.href;  
+            this.page.identifier = window.location.pathname; 
+        };
+        (function() { 
+            var d = document, s = d.createElement('script');
+            s.src = 'https://sk-cyberops.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</body>
+</html>

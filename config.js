@@ -116,6 +116,15 @@ const portfolioConfig = {
             date: "Mar 11, 2026",
             file: "articles/what-is-adcs.html",
             icon: "fa-microchip"
+        },
+        {
+            id: "47-day-cert-timeline",
+            title: "The 47-Day Certificate Timeline: Understanding SC-081v3",
+            category: "PKI & Security",
+            readTime: "6 min read",
+            date: "Mar 11, 2026",
+            file: "articles/47-day-cert-timeline.html",
+            icon: "fa-clock-rotate-left"
         }
     ]
 };
