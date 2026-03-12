@@ -10,7 +10,7 @@ const portfolioConfig = {
 
     // Contact Information
     contact: {
-        location: "Katy, TX",
+        location: "Houston, TX",
         email: "saikiranmandiga@skcyberops.com",
         phone: "6303283679"
     },
@@ -107,15 +107,6 @@ const portfolioConfig = {
             date: "March 11, 2026",
             file: "articles/Paloalto-packet-flow.html",
             icon: "fa-server"
-        },
-        {
-            id: "what-is-adcs",
-            title: "what is ADCS",
-            category: "Cryptography",
-            readTime: "7 min read",
-            date: "Mar 11, 2026",
-            file: "articles/what-is-adcs.html",
-            icon: "fa-shield-halved"
         }
     ]
 };
@@ -229,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 7. Knowledge Base Grid (Index Page)
     const kbGrid = document.getElementById('kb-grid');
-    if(kbGrid && portfolioConfig.knowledgeBase) {
+    if (kbGrid && portfolioConfig.knowledgeBase) {
         kbGrid.innerHTML = '';
         portfolioConfig.knowledgeBase.forEach(article => {
             // If on the index page, we need 'articles/' prefix. If already in articles/, we need just the filename.
@@ -257,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 8. Knowledge Base Sidebar Directory (Article Pages)
     const sidebarDir = document.getElementById('sidebar-directory');
-    if(sidebarDir && portfolioConfig.knowledgeBase) {
+    if (sidebarDir && portfolioConfig.knowledgeBase) {
         sidebarDir.innerHTML = '';
         const currentFile = window.location.pathname.split('/').pop();
 
