@@ -1,3 +1,36 @@
+/* 
+    --- AUTHENTICATION GATE ---
+    Note: Client-side gate only for demonstration on static site.
+*/
+const VALID_USER = "saikiran";
+const VALID_PASS = "cyberops7729";
+
+const authGate = document.getElementById('auth-gate');
+const mainPortal = document.getElementById('main-portal');
+const loginUser = document.getElementById('login-user');
+const loginPass = document.getElementById('login-pass');
+const btnLogin = document.getElementById('btn-login');
+
+// Check if already authenticated this session
+if (sessionStorage.getItem('sk_admin_authenticated') === 'true') {
+    authGate.classList.add('hidden');
+    mainPortal.classList.remove('hidden');
+}
+
+btnLogin.addEventListener('click', () => {
+    const user = loginUser.value.trim();
+    const pass = loginPass.value.trim();
+
+    if (user === VALID_USER && pass === VALID_PASS) {
+        sessionStorage.setItem('sk_admin_authenticated', 'true');
+        authGate.classList.add('hidden');
+        mainPortal.classList.remove('hidden');
+    } else {
+        alert("ACCESS DENIED: Invalid Operator ID or Access Key.");
+        loginPass.value = '';
+    }
+});
+
 const logOutput = document.getElementById('terminal-output');
 const btnGenerate = document.getElementById('btn-generate');
 
