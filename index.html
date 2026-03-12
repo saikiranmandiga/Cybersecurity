@@ -10,6 +10,9 @@
     
     <!-- Matter.js for 2D Physics -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    
+    <!-- Central Portfolio Configuration -->
+    <script src="./config.js"></script>
 
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -149,23 +152,23 @@
                 </div>
                 
                 <div class="flex-1 text-center md:text-left flex flex-col justify-center">
-                    <p class="mono text-[#67a4cf] text-xs mb-1 uppercase tracking-[0.2em] font-bold">Vigilant Defense. Resilient Operations.</p>
-                    <h1 class="text-4xl md:text-5xl font-bold mb-3 uppercase tracking-wider mono" style="color: #e0f0ff; text-shadow: 0 0 20px rgba(140, 196, 235, 0.5);">
-                        SK CYBEROPS
+                    <p id="cfg-tagline" class="mono text-[#67a4cf] text-xs mb-1 uppercase tracking-[0.2em] font-bold">...</p>
+                    <h1 id="cfg-name" class="text-4xl md:text-5xl font-bold mb-3 uppercase tracking-wider mono" style="color: #e0f0ff; text-shadow: 0 0 20px rgba(140, 196, 235, 0.5);">
+                        ...
                     </h1>
                     <h2 class="text-lg md:text-xl text-gray-300 mb-6 font-medium border-l-[3px] border-[#8cc4eb] pl-3 md:ml-1">
-                        <span class="text-white font-bold">Sahasra Saikiran Mandiga</span> <span class="text-[#67a4cf] mx-2">///</span> Sr. Cybersecurity Consultant
+                        <span id="cfg-title" class="text-white font-bold">...</span> <span class="text-[#67a4cf] mx-2">///</span> <span id="cfg-subtitle">...</span>
                     </h2>
                     
                     <div class="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-gray-300 mono">
                         <span class="flex items-center space-x-2 bg-black/40 px-3 py-1 rounded border border-gray-700">
-                            <i class="fa-solid fa-location-crosshairs text-[#00ffcc]"></i> <span>Katy, TX</span>
+                            <i class="fa-solid fa-location-crosshairs text-[#00ffcc]"></i> <span id="cfg-location">---</span>
                         </span>
                         <span class="flex items-center space-x-2 bg-black/40 px-3 py-1 rounded border border-gray-700">
-                            <i class="fa-solid fa-envelope text-[#00ffcc]"></i> <span>saikiranmandiga85@gmail.com</span>
+                            <i class="fa-solid fa-envelope text-[#00ffcc]"></i> <span id="cfg-email">---</span>
                         </span>
                         <span class="flex items-center space-x-2 bg-black/40 px-3 py-1 rounded border border-gray-700">
-                            <i class="fa-solid fa-phone-flip text-[#00ffcc]"></i> <span>6303283679</span>
+                            <i class="fa-solid fa-phone-flip text-[#00ffcc]"></i> <span id="cfg-phone">---</span>
                         </span>
                     </div>
                 </div>
@@ -216,11 +219,8 @@
                             <p class="text-[#0088ff] mono text-sm mb-2 uppercase flex justify-between">
                                 <span>[ Certifications ]</span> <span class="text-xs">Verified</span>
                             </p>
-                            <div class="flex flex-wrap gap-2">
-                                <span class="px-3 py-1 bg-black/50 border border-[#00ffcc] text-[#00ffcc] text-xs font-bold rounded-sm uppercase tracking-wider">CISM</span>
-                                <span class="px-3 py-1 bg-black/50 border border-[#00ffcc] text-[#00ffcc] text-xs font-bold rounded-sm uppercase tracking-wider">CEH</span>
-                                <span class="px-3 py-1 bg-black/50 border border-[#00ffcc] text-[#00ffcc] text-xs font-bold rounded-sm uppercase tracking-wider">Security+</span>
-                                <span class="px-3 py-1 bg-black/50 border border-[#00ffcc] text-[#00ffcc] text-xs font-bold rounded-sm uppercase tracking-wider">AWS SysOps Admin</span>
+                            <div id="cfg-certifications" class="flex flex-wrap gap-2">
+                                <!-- Injected from config.js -->
                             </div>
                         </div>
 
@@ -228,12 +228,8 @@
                             <p class="text-[#0088ff] mono text-sm mb-2 uppercase flex justify-between">
                                 <span>[ Core Tech ]</span> <span class="text-xs">Active</span>
                             </p>
-                            <div class="flex flex-wrap gap-2">
-                                <span class="px-3 py-1 bg-[#0f172a] border border-gray-600 text-gray-300 text-xs rounded-sm">Palo Alto</span>
-                                <span class="px-3 py-1 bg-[#0f172a] border border-gray-600 text-gray-300 text-xs rounded-sm">AWS Cloud Security</span>
-                                <span class="px-3 py-1 bg-[#0f172a] border border-gray-600 text-gray-300 text-xs rounded-sm">Splunk</span>
-                                <span class="px-3 py-1 bg-[#0f172a] border border-gray-600 text-gray-300 text-xs rounded-sm">Tenable</span>
-                                <span class="px-3 py-1 bg-[#0f172a] border border-gray-600 text-gray-300 text-xs rounded-sm">Wireshark</span>
+                            <div id="cfg-coretech" class="flex flex-wrap gap-2">
+                                <!-- Injected from config.js -->
                             </div>
                         </div>
                     </div>
@@ -246,21 +242,8 @@
                     
                     <h3 class="text-xl neon-text-green mb-4 mono uppercase relative z-10"><i class="fa-solid fa-server mr-2"></i> Homelab & Infrastructure</h3>
                     
-                    <div class="space-y-3 relative z-10 text-gray-300 text-sm">
-                        <div class="flex items-start gap-3 bg-black/40 p-3 rounded border border-gray-800 hover:border-[#00ffcc]/50 transition-colors">
-                            <i class="fa-solid fa-shield-halved mt-1 text-[#0088ff]"></i>
-                            <div>
-                                <strong class="text-white block mb-1">Enterprise Architecture Simulation</strong>
-                                <p>Engineered comprehensive homelab environments to deploy, test, and validate security postures against advanced persistent threats.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3 bg-black/40 p-3 rounded border border-gray-800 hover:border-[#00ffcc]/50 transition-colors">
-                            <i class="fa-solid fa-certificate mt-1 text-[#0088ff]"></i>
-                            <div>
-                                <strong class="text-white block mb-1">PKI & Firewall Management</strong>
-                                <p>Automated SSL certificate renewals across domains and practiced centralized firewall policy management replicating enterprise Panorama setups.</p>
-                            </div>
-                        </div>
+                    <div id="cfg-projects" class="space-y-3 relative z-10 text-gray-300 text-sm">
+                        <!-- Injected by config.js -->
                     </div>
                 </section>
             </div>
@@ -271,84 +254,8 @@
                 <section class="h-full flex flex-col">
                     <h3 class="text-xl neon-text-green mb-4 mono uppercase physics-item px-2"><i class="fa-solid fa-briefcase mr-2"></i> Mission Logs (Experience)</h3>
                     
-                    <div class="space-y-4 flex-1">
-                        
-                        <!-- Experience Card -->
-                        <article class="physics-item p-5 glass-panel border-l-4 border-l-[#00ffcc] hover:bg-white/5 transition-colors relative overflow-hidden">
-                            <div class="absolute top-0 right-0 p-2 opacity-10"><i class="fa-solid fa-fire-extinguisher text-6xl"></i></div>
-                            <div class="flex justify-between items-start mb-1">
-                                <h4 class="text-xl font-bold text-white relative z-10">Academy Sports & Outdoors</h4>
-                                <div class="bg-black/60 border border-gray-700 px-2 py-1 rounded flex flex-col items-end shrink-0 relative z-10">
-                                    <span class="text-[10px] text-gray-400 mono leading-none uppercase">NASDAQ: <strong class="text-white">ASO</strong></span>
-                                    <div class="text-xs font-bold font-mono text-green-400 flex items-center mt-0.5">
-                                        <span id="aso-price">54.32</span> <i class="fa-solid fa-caret-up ml-1 text-[10px]"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <p class="text-[#00ffcc] mono text-sm uppercase tracking-wider mb-3 relative z-10">Cybersecurity Engineer</p>
-                            <p class="text-gray-300 text-sm leading-relaxed relative z-10">
-                                Configured and managed <strong class="text-white">Palo Alto firewalls</strong> centrally through <strong class="text-white">Panorama M-500</strong>. Implemented Global Protect VPNs ensuring secure remote access. Administered privileged access management (PAM) utilizing <strong class="text-white">CyberArk</strong>, significantly reducing insider threat vectors.
-                            </p>
-                            
-                            <!-- Mock Stock Ticker Script -->
-                            <script>
-                                setInterval(() => {
-                                    const priceEl = document.getElementById('aso-price');
-                                    let current = parseFloat(priceEl.innerText);
-                                    let change = (Math.random() * 0.4) - 0.15; // slight upward bias
-                                    let newPrice = (current + change).toFixed(2);
-                                    priceEl.innerText = newPrice;
-                                    
-                                    const icon = priceEl.nextElementSibling;
-                                    if (change >= 0) {
-                                        priceEl.parentElement.className = 'text-xs font-bold font-mono text-green-400 flex items-center mt-0.5';
-                                        icon.className = 'fa-solid fa-caret-up ml-1 text-[10px]';
-                                    } else {
-                                        priceEl.parentElement.className = 'text-xs font-bold font-mono text-red-500 flex items-center mt-0.5';
-                                        icon.className = 'fa-solid fa-caret-down ml-1 text-[10px]';
-                                    }
-                                }, 3000);
-                            </script>
-                        </article>
-
-                        <!-- Experience Card -->
-                        <article class="physics-item p-5 glass-panel border-l-4 border-l-[#0088ff] hover:bg-white/5 transition-colors relative overflow-hidden">
-                            <div class="absolute top-0 right-0 p-2 opacity-10"><i class="fa-solid fa-building-columns text-6xl"></i></div>
-                            <div class="flex justify-between items-start mb-1">
-                                <h4 class="text-xl font-bold text-white relative z-10">JP Morgan Chase</h4>
-                                <div class="bg-black/60 border border-gray-700 px-2 py-1 rounded flex flex-col items-end shrink-0 relative z-10">
-                                    <span class="text-[10px] text-gray-400 mono leading-none uppercase">NYSE: <strong class="text-white">JPM</strong></span>
-                                    <div class="text-xs font-bold font-mono text-green-400 flex items-center mt-0.5">
-                                        <span id="jpm-price">196.48</span> <i class="fa-solid fa-caret-up ml-1 text-[10px]"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <p class="text-[#0088ff] mono text-sm uppercase tracking-wider mb-3 relative z-10">Sr. Cybersecurity Consultant</p>
-                            <p class="text-gray-300 text-sm leading-relaxed relative z-10">
-                                Automated vulnerability detection workflows and compliance reporting by integrating <strong class="text-white">Splunk</strong> analytics with <strong class="text-white">Qualys</strong> vulnerability management suites, enhancing incident detection speeds across financial perimeters.
-                            </p>
-
-                            <!-- Mock Stock Ticker Script -->
-                            <script>
-                                setInterval(() => {
-                                    const priceEl = document.getElementById('jpm-price');
-                                    let current = parseFloat(priceEl.innerText);
-                                    let change = (Math.random() * 0.8) - 0.35; // slight upward bias
-                                    let newPrice = (current + change).toFixed(2);
-                                    priceEl.innerText = newPrice;
-                                    
-                                    const icon = priceEl.nextElementSibling;
-                                    if (change >= 0) {
-                                        priceEl.parentElement.className = 'text-xs font-bold font-mono text-green-400 flex items-center mt-0.5';
-                                        icon.className = 'fa-solid fa-caret-up ml-1 text-[10px]';
-                                    } else {
-                                        priceEl.parentElement.className = 'text-xs font-bold font-mono text-red-500 flex items-center mt-0.5';
-                                        icon.className = 'fa-solid fa-caret-down ml-1 text-[10px]';
-                                    }
-                                }, 3500);
-                            </script>
-                        </article>
-
+                    <div id="cfg-experience" class="space-y-4 flex-1">
+                        <!-- Experience cards injected by config.js -->
                     </div>
                 </section>
             </div>
