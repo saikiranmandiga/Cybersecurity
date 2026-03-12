@@ -71,7 +71,7 @@ btnGenerate.addEventListener('click', async () => {
         Do NOT write the <html>, <head>, or <body> tags. Only the pure content. Do not include a Main Title h1. Start directly with an h2 or p.
         `;
 
-        const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`, {
+        const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
