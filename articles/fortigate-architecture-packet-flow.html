@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortigate Architecture & Packet FLow - SK Cyberops KB</title>
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
+    
+    <!-- Central Portfolio Configuration -->
+    <script src="../config.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkblue: '#040d1a',
+                        neon: '#00ffcc',
+                        neonblue: '#0088ff',
+                        glassbg: 'rgba(10, 15, 30, 0.7)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Menlo', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Prism.js for Code Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-twilight.min.css" rel="stylesheet" />
+    
+    <!-- RSS Discovery -->
+    <link rel="alternate" type="application/rss+xml" title="SK Cyberops Intelligence Feed" href="../rss.xml">
+    
+    <style>
+        body {
+            background-color: #040d1a;
+            color: #e2e8f0;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 255, 204, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(0, 136, 255, 0.03) 0%, transparent 50%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        .glass-panel {
+            background: rgba(10, 15, 30, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Markdown-style content formatting for Gemini generated text */
+        .gemini-content h2 {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .gemini-content h3 {
+            color: #0088ff;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .gemini-content p {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+            color: #cbd5e1;
+        }
+
+        .gemini-content ul, .gemini-content ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            color: #cbd5e1;
+        }
+
+        .gemini-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .gemini-content ul { list-style-type: disc; }
+        .gemini-content ul li::marker { color: #0088ff; }
+
+        /* Tech Blocks resembling reference site */
+        .tech-block {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #0088ff;
+        }
+        
+        .tech-block.error { border-left-color: #ef4444; }
+        .tech-block.success { border-left-color: #10b981; }
+        .tech-block.warning { border-left-color: #f59e0b; }
+
+        .tech-block h4 {
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        /* Inline code */
+        .gemini-content p code, .gemini-content li code {
+            background: rgba(0, 0, 0, 0.4);
+            color: #00ffcc;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            border: 1px solid rgba(0,255,204,0.2);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 glass-panel border-b-0 border-t-0 border-l-0 border-r-0 border-b border-gray-800/50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo Binding via config.js -->
+                <div class="flex-shrink-0 flex items-center space-x-3 cursor-pointer" onclick="window.location.href='../index.html'">
+                    <img src="../logo.svg" alt="SK Cyberops Logo" class="w-8 h-8 md:w-10 md:h-10">
+                    <span id="nav-cfg-name" class="font-bold text-white text-lg md:text-xl tracking-widest font-mono uppercase">SK CYBEROPS</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8 font-mono text-sm">
+                        <a href="../index.html" class="text-gray-300 hover:text-[#00ffcc] transition-colors"><i class="fa-solid fa-house mr-1"></i> Dashboard</a>
+                        <a href="../threat-map.html" class="text-gray-300 hover:text-[#00ffcc] transition-colors"><i class="fa-solid fa-earth-americas mr-1"></i> Global Threats</a>
+                        <a href="../soc-simulator.html" class="text-gray-300 hover:text-[#00ffcc] transition-colors"><i class="fa-solid fa-shield-virus mr-1"></i> SOC Simulator</a>
+                        <a href="../knowledge-base.html" class="text-[#00ffcc] border-b-2 border-[#00ffcc] pb-1"><i class="fa-solid fa-book-journal-whills mr-1"></i> Knowledge Base</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-8">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-full lg:w-1/4 hidden lg:block">
+            <div class="sticky top-28 glass-panel p-5 rounded-lg">
+                <a href="../knowledge-base.html" class="text-xs font-mono text-gray-500 hover:text-[#00ffcc] mb-6 inline-block transition-colors"><i class="fa-solid fa-arrow-left mr-1"></i> Back to Directory</a>
+                <h3 class="text-white font-mono uppercase text-sm mb-4 pb-2 border-b border-gray-800 tracking-wider"><i class="fa-solid fa-folder-tree mr-2 text-[#0088ff]"></i> Articles</h3>
+                <ul id="sidebar-directory" class="space-y-2 text-sm text-gray-400">
+                    <!-- Javascript populates this -->
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Article Area -->
+        <article class="w-full lg:w-3/4">
+            
+            <!-- Article Header -->
+            <header class="mb-8 border-b border-gray-800/50 pb-6">
+                <div class="flex items-center gap-3 mb-4 text-xs font-mono">
+                    <span class="bg-[#0088ff]/20 text-[#0088ff] border border-[#0088ff]/30 px-2 py-1 rounded">Category</span>
+                    <span class="text-gray-500"><i class="fa-regular fa-clock mr-1"></i> 5 min read</span>
+                    <span class="text-gray-500"><i class="fa-regular fa-calendar mr-1"></i> Today's Date</span>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">Your New Article Title</h1>
+                
+                <div class="mt-6 flex gap-4">
+                    <button class="text-sm bg-white/5 hover:bg-white/10 border border-gray-700 text-gray-300 py-1.5 px-4 rounded transition-colors" onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied!')">
+                        <i class="fa-solid fa-link mr-2"></i> Copy Link
+                    </button>
+                </div>
+            </header>
+
+            <!-- Gemini Generated Content Area -->
+            <!-- Instructions for USER: Paste the Markdown from Gemini directly inside this container -->
+            <div class="gemini-content space-y-6">
+                
+                <h2>Understanding FortiGate Architecture & Packet Flow</h2>
+<p>As a Senior Cybersecurity Engineer, a deep understanding of the underlying architecture and how packets traverse a security appliance is paramount for effective deployment, troubleshooting, and optimization. This article delves into the FortiGate's core components and the intricate journey a packet takes from ingress to egress, providing a foundational knowledge essential for any FortiGate administrator or security professional.</p>
+
+<h3>1. FortiGate Architecture Overview</h3>
+<p>FortiGate devices, whether hardware or virtual, are powered by FortiOS and leverage a unique combination of general-purpose CPUs and custom-built Application-Specific Integrated Circuits (ASICs) to deliver high performance and advanced security features. This hybrid approach allows FortiGates to accelerate security inspection, encryption, and network processing while maintaining flexibility for complex policy enforcement.</p>
+
+<h4>1.1 Key Architectural Components</h4>
+<ul>
+    <li><strong>FortiOS:</strong> The operating system that underpins all FortiGate functionality, providing the management interface, policy engine, and security services.</li>
+    <li><strong>General Purpose CPU (GPC):</strong> Handles control plane operations, slow path traffic, less common protocols, and management tasks. It processes the first packet of a new session if not offloaded and manages the session table.</li>
+    <li><strong>Security Processing Unit (SPU/CPx):</strong> Fortinet's custom ASICs designed to accelerate compute-intensive security functions like encryption/decryption (IPsec, SSL), IPSec, IPS/IDS pattern matching, antivirus scanning, and VPN offloading. Examples include CP8 and CP9.</li>
+    <li><strong>Network Processor (NPx):</strong> Fortinet's custom ASICs dedicated to accelerating network functions, including firewall policy lookup, NAT, IPsec VPN offloading, and flow acceleration for known sessions. Examples include NP6, NP6Lite, and NP7. These processors handle the "fast path" for established sessions.</li>
+    <li><strong>Memory:</strong> Stores FortiOS, configuration, routing tables, session tables, security profiles, and log data.</li>
+    <li><strong>Network Interfaces:</strong> Physical or virtual ports for connecting to various network segments.</li>
+</ul>
+
+<h3>2. The FortiGate Packet Flow: A Deep Dive</h3>
+<p>The "life of a packet" through a FortiGate is a multi-stage process. Understanding this flow is critical for diagnosing connectivity issues, performance bottlenecks, and unexpected policy behavior. The core principle is that the first packet of a new session typically undergoes a more extensive evaluation (slow path), while subsequent packets of an established session are often accelerated (fast path) by ASICs.</p>
+
+<h4>2.1 High-Level Packet Flow Stages</h4>
+<ol>
+    <li><strong>Ingress Interface:</strong> Packet arrives at a physical or virtual interface.</li>
+    <li><strong>Hardware Checksum & VLAN Tagging:</strong> Basic integrity checks and VLAN identification.</li>
+    <li><strong>NPx Pre-processing (if applicable):</strong> If the traffic matches an existing NPx-accelerated session, it bypasses the CPU for faster processing.</li>
+    <li><strong>FortiGate Firewall Engine (CPU Path):</strong>
+        <ul>
+            <li><strong>Input Interface & Policy Lookup:</strong> Determines the relevant firewall policy based on source/destination IP, port, and interface.</li>
+            <li><strong>Session Creation:</strong> For new sessions, a entry is created in the session table.</li>
+            <li><strong>NAT Lookup:</strong> If NAT is configured, source/destination NAT is applied.</li>
+            <li><strong>Routing Lookup:</strong> Determines the egress interface based on the routing table.</li>
+        </ul>
+    </li>
+    <li><strong>Security Inspection (SPU/CPx & CPU):</strong>
+        <ul>
+            <li><strong>SSL Inspection:</strong> If enabled, traffic is decrypted (often offloaded to SPU).</li>
+            <li><strong>Security Profiles:</strong> Traffic is inspected by IPS, Antivirus, Web Filter, Application Control, DLP, etc. (often offloaded to SPU).</li>
+        </ul>
+    </li>
+    <li><strong>Egress Interface:</strong> Packet exits the FortiGate.</li>
+</ol>
+
+<h4>2.2 Detailed Packet Flow Steps</h4>
+<p>Let's break down the journey a packet takes through the FortiGate in more detail, highlighting the critical decision points:</p>
+
+<ol>
+    <li><strong>Packet Ingress</strong>
+        <ul>
+            <li>A packet arrives at an interface (e.g., `port1`).</li>
+            <li>Basic integrity checks (checksum, header validation).</li>
+            <li>VLAN tag identification (if present).</li>
+        </ul>
+    </li>
+    <li><strong>Hardware Accelerated Path (NPx - Network Processor)</strong>
+        <ul>
+            <li>The NPx checks if the incoming packet belongs to an existing session that it can accelerate (a "fast path" session).</li>
+            <li>If a match is found, the NPx performs basic firewall policy enforcement, NAT, and routing without involving the main CPU, significantly reducing latency and increasing throughput.</li>
+            <li>If no match, or if the session is marked for "slow path" (e.g., first packet of a new session, complex inspection, or specific protocols), the packet is forwarded to the FortiGate's CPU.</li>
+        </ul>
+    </li>
+    <li><strong>Software Path (CPU - Firewall Engine)</strong>
+        <ul>
+            <li><strong>RTA (Reverse Path Forwarding Check):</strong> The FortiGate verifies that the source IP of the incoming packet is reachable via the interface it arrived on, preventing IP spoofing.</li>
+            <li><strong>Session Lookup:</strong> The FortiGate searches its session table.
+                <ul>
+                    <li>If an existing session is found, and it's not NPx-accelerated, the packet is processed according to the established session parameters.</li>
+                    <li>If no session is found, this is considered the "first packet" of a new session.</li>
+                </ul>
+            </li>
+            <li><strong>Policy Lookup (First Packet):</strong>
+                <ul>
+                    <li>The FortiGate evaluates firewall policies in order (top-down) based on:
+                        <ul>
+                            <li>Incoming Interface</li>
+                            <li>Source IP/User/Group</li>
+                            <li>Destination IP/Virtual IP (VIP)</li>
+                            <li>Service (Port/Protocol)</li>
+                            <li>Outgoing Interface (if specified in policy)</li>
+                        </ul>
+                    </li>
+                    <li>The first policy that matches the traffic dictates its action (ACCEPT, DENY, NAT, security profiles).</li>
+                </ul>
+            </li>
+            <li><strong>Session Creation:</strong> If a matching policy permits the traffic, a new session entry is created in the session table. This entry records the source/destination IPs and ports, NAT information, assigned policy, and security profile actions. Subsequent packets for this session can then leverage this entry.</li>
+            <li><strong>NAT (Network Address Translation):</strong> If the matched policy requires NAT (Source NAT, Destination NAT, or Virtual IPs), the translation is performed.</li>
+            <li><strong>Routing Lookup:</strong> The FortiGate determines the best exit interface for the packet based on its destination IP address and the routing table. This happens after NAT, as the destination IP might have changed.</li>
+        </ul>
+    </li>
+    <li><strong>Security Processing (SPU/CPx & CPU)</strong>
+        <ul>
+            <li>If the matched firewall policy has security profiles enabled (e.g., Antivirus, Web Filtering, IPS, Application Control, DLP, Sandbox), the packet content is forwarded for inspection.</li>
+            <li><strong>SSL Inspection:</strong> If SSL/SSH Inspection is enabled, encrypted traffic is decrypted, inspected by relevant security profiles, and then re-encrypted before forwarding. This decryption/re-encryption process is heavily offloaded to the SPU (CPx).</li>
+            <li>Many of these intensive security functions are offloaded to the SPU (Content Processor ASICs) for hardware acceleration (e.g., IPS signature matching, SSL decryption).</li>
+            <li>Based on the inspection results, the packet might be allowed, blocked, or altered.</li>
+        </ul>
+    </li>
+    <li><strong>Packet Egress</strong>
+        <ul>
+            <li>After all checks and processing, the packet is encapsulated (e.g., Ethernet header added) and sent out the determined egress interface.</li>
+        </ul>
+    </li>
+</ol>
+
+<p><strong>Note on Flow-based vs. Proxy-based Inspection:</strong> FortiGate offers both. Flow-based is generally faster, inspecting packets as they stream. Proxy-based buffers the entire file/stream before making a decision, offering deeper inspection but with higher latency. The choice impacts where and how certain security profiles function.</p>
+
+<h3>3. Essential CLI Commands for Packet Flow Troubleshooting</h3>
+<p>Understanding the packet flow arms you with the knowledge to effectively use FortiGate's powerful diagnostic tools. Here are some indispensable CLI commands:</p>
+
+<div class="tech-block">
+    <h4 class="text-[#0088ff] mb-2">Displaying FortiGate Session Table</h4>
+    <pre><code class="language-bash">diag sys session list
+diag sys session list | grep &lt;source_ip&gt;</code></pre>
+</div>
+<p><em>Purpose:</em> Shows active sessions, including source/destination, ports, policy ID, protocol, and session state. Crucial for verifying if traffic is hitting a policy and establishing a session.</p>
+
+<div class="tech-block">
+    <h4 class="text-[#0088ff] mb-2">Real-time Packet Flow Debugging</h4>
+    <pre><code class="language-bash">diag debug flow filter saddr &lt;source_ip&gt;
+diag debug flow filter daddr &lt;destination_ip&gt;
+diag debug flow filter proto &lt;protocol_number&gt;
+diag debug flow filter dport &lt;destination_port&gt;
+diag debug flow show function-name enable
+diag debug flow show iprope enable
+diag debug flow trace start 100
+diag debug enable
+diag debug flow show console enable
+diag debug flow show port enable
+diag debug flow show full
+diag debug flow show &lt;option&gt; enable
+# After capturing output:
+diag debug reset
+diag debug disable</code></pre>
+</div>
+<p><em>Purpose:</em> The ultimate tool for tracing a packet's journey through the FortiGate, showing interface reception, policy matching, NAT decisions, routing, and security profile actions. Use filters to narrow down output.</p>
+
+<div class="tech-block">
+    <h4 class="text-[#0088ff] mb-2">Packet Sniffer</h4>
+    <pre><code class="language-bash">diag sniffer packet &lt;interface&gt; 'host &lt;ip_address&gt; and port &lt;port_number&gt;' 4 
+diag sniffer packet any 'port &lt;port_number&gt;' 4 a</code></pre>
+</div>
+<p><em>Purpose:</em> Captures raw packet data at specific interfaces, confirming if traffic reaches the FortiGate and exits as expected. The '4' displays verbose output (headers only), 'a' displays ASCII output.</p>
+
+<div class="tech-block">
+    <h4 class="text-[#0088ff] mb-2">Routing Table Information</h4>
+    <pre><code class="language-bash">get router info routing-table all
+get router info kernel</code></pre>
+</div>
+<p><em>Purpose:</em> Verifies the routing paths, essential for confirming that the FortiGate knows how to reach the destination IP address after any NAT translations.</p>
+
+<div class="tech-block">
+    <h4 class="text-[#0088ff] mb-2">Policy Lookup Simulation</h4>
+    <pre><code class="language-bash">diag firewall iprope lookup &lt;source_ip&gt; &lt;source_port&gt; &lt;destination_ip&gt; &lt;destination_port&gt; &lt;protocol&gt; &lt;incoming_interface&gt;</code></pre>
+</div>
+<p><em>Purpose:</em> Simulates the policy lookup process for a given traffic flow, helping to determine which firewall policy would be matched.</p>
+
+<h3>Conclusion</h3>
+<p>Mastering FortiGate architecture and its packet flow is not just an academic exercise; it's a practical necessity for any cybersecurity professional managing these devices. This knowledge empowers you to design robust security policies, troubleshoot complex network issues with precision, and optimize performance by understanding when and how hardware acceleration is leveraged. By combining theoretical understanding with hands-on CLI diagnostics, you can ensure your FortiGate deployments are both secure and efficient.</p>
+
+            </div>
+
+            <!-- Subscription Box -->
+            <section class="mt-16 p-8 glass-panel border-t-2 border-[#00ffcc] relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <i class="fa-solid fa-envelope-open-text text-6xl text-[#00ffcc]"></i>
+                </div>
+                <div class="relative z-10">
+                    <h3 class="text-xl font-bold text-white mb-2 mono uppercase tracking-wider">CyberOps Intelligence Report</h3>
+                    <p class="text-gray-400 text-sm mb-6 max-w-xl">
+                        Subscribe to receive high-fidelity technical deep-dives and security research directly in your inbox. No noise, just raw intelligence.
+                    </p>
+                    <form action="https://api.follow.it/subscription-form/aXNsWWNSVk5LQ09hN0o3K0Jpc0VHVFBLakhKNW5iV0xxMlQwYmUrMEtnSFNQRUs5anhROVJiWGQ1V2V3K2ZxdWFCTkNtbGk0RGFiSDBEZmNmQXl0OU1WYllJekJrWlozZmIrWGNmNTNHcWVSSUF1NmJPOTliWE5aeGVpbGJmYmd8ZTZkM2Y0cm5NYWc1Tmp4MGhKQnJ3a0QveTBmaTA4T3pxbjVRdkwyWEZxdz0=/8" method="post" class="flex flex-col sm:flex-row gap-3">
+                        <input type="email" name="email" placeholder="operator@secure-domain.com" required
+                            class="flex-1 bg-black/60 border border-gray-700 rounded-lg px-4 py-3 text-sm mono text-[#00ffcc] focus:outline-none focus:border-[#00ffcc] transition-colors">
+                        <button type="submit" 
+                            class="bg-[#00ffcc] hover:bg-[#39ff14] text-black font-bold py-3 px-8 rounded-lg transition-all duration-300 mono uppercase text-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> Subscribe
+                        </button>
+                    </form>
+                    <p class="mt-4 text-[10px] text-gray-500 uppercase tracking-widest mono flex items-center justify-between w-full">
+                        <span>SECURE TRANSMISSION // ARCHIVE NOTIFICATIONS ONLY</span>
+                        <a href="../rss.xml" class="text-[#00ffcc] hover:text-[#39ff14] transition-colors"><i class="fa-solid fa-rss mr-1"></i> Follow via RSS</a>
+                    </p>
+                </div>
+            </section>
+
+            <!-- Discussion Section -->
+            <section class="mt-16 pt-8 border-t border-gray-800">
+                <h3 class="text-xl neon-text-blue mb-8 mono uppercase"><i class="fa-solid fa-comments mr-2"></i> Mission Debrief (Comments)</h3>
+                <div id="disqus_thread"></div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800/50 bg-black/40 mt-12 py-8 text-center text-sm font-mono text-gray-500">
+        <p>SK Cyberops Knowledge Base &copy; 2024</p>
+    </footer>
+
+    <!-- Prism.js for Code Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    
+    <!-- Config Binding Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if(window.portfolioConfig) {
+                const navNameEL = document.getElementById('nav-cfg-name');
+                if(navNameEL && portfolioConfig.name) navNameEL.innerText = "SK CYBEROPS"; 
+
+                // Populate Sidebar Directory
+                const sidebarDir = document.getElementById('sidebar-directory');
+                if(sidebarDir && portfolioConfig.knowledgeBase) {
+                    const currentFile = window.location.pathname.split('/').pop();
+
+                    portfolioConfig.knowledgeBase.forEach(article => {
+                        const linkTarget = "../" + article.file;
+                        const isCurrent = article.file.endsWith(currentFile);
+                        const activeClass = isCurrent ? "text-[#00ffcc] bg-white/5" : "text-gray-400 hover:text-white hover:bg-white/5";
+
+                        sidebarDir.innerHTML += `
+                            <li>
+                                <a href="${linkTarget}" class="block w-full text-left py-2 px-3 rounded transition-colors ${activeClass}">
+                                    <i class="fa-solid ${article.icon} mr-2 opacity-70"></i> ${article.title}
+                                </a>
+                            </li>
+                        `;
+                    });
+                }
+            }
+        });
+    </script>
+
+    <!-- Disqus Comments Integration -->
+    <script>
+        var disqus_config = function () {
+            this.page.url = window.location.href;  
+            this.page.identifier = window.location.pathname; 
+        };
+        (function() { 
+            var d = document, s = d.createElement('script');
+            s.src = 'https://sk-cyberops.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</body>
+</html>
