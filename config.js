@@ -125,6 +125,15 @@ const portfolioConfig = {
             date: "Mar 11, 2026",
             file: "articles/47-day-cert-timeline.html",
             icon: "fa-clock-rotate-left"
+        },
+        {
+            id: "devsecops-in-2026",
+            title: "DevSecops in 2026",
+            category: "SecOps",
+            readTime: "6 min read",
+            date: "Mar 12, 2026",
+            file: "articles/devsecops-in-2026.html",
+            icon: "fa-network-wired"
         }
     ]
 };
