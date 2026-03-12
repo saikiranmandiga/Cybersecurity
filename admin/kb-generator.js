@@ -55,6 +55,12 @@ btnGenerate.addEventListener('click', async () => {
     btnGenerate.disabled = true;
     btnGenerate.innerText = "Processing Sequence...";
 
+    const ghHeaders = {
+        'Authorization': `Bearer ${githubToken}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+    };
+
     try {
         // --- 1. CALL GEMINI API ---
         logAction(`Initiating Gemini API prompt for topic: ${topic}`);
@@ -93,10 +99,12 @@ btnGenerate.addEventListener('click', async () => {
         logAction(`Gemini successfully generated ${generatedHtml.length} bytes of content.`, "success");
 
         // --- 2. FETCH TEMPLATE ---
-        logAction(`Fetching _template.html from Github directly...`);
-        const templateRes = await fetch(`https://raw.githubusercontent.com/saikiranmandiga/Cybersecurity/main/articles/_template.html`);
-        if (!templateRes.ok) throw new Error("Failed to load template from github main branch.");
-        let templateData = await templateRes.text();
+        logAction(`Fetching _template.html from Github via API...`);
+        const templateGetRes = await fetch(`https://api.github.com/repos/saikiranmandiga/Cybersecurity/contents/articles/_template.html`, { headers: ghHeaders });
+        if (!templateGetRes.ok) throw new Error("Failed to load template from github API.");
+        
+        const templateFileData = await templateGetRes.json();
+        let templateData = b64DecodeUnicode(templateFileData.content);
 
         // Inject dynamic values into template
         templateData = templateData.replace(/<title>.*?<\/title>/, `<title>${topic} - SK Cyberops KB</title>`);
@@ -114,12 +122,6 @@ btnGenerate.addEventListener('click', async () => {
         logAction(`Article assembled successfully.`);
 
         // --- 3. COMMIT NEW ARTICLE TO GITHUB ---
-        const ghHeaders = {
-            'Authorization': `Bearer ${githubToken}`,
-            'Accept': 'application/vnd.github.v3+json',
-            'Content-Type': 'application/json'
-        };
-
         logAction(`Connecting to GitHub API to create articles/${slug}.html...`);
         const articlePutRes = await fetch(`https://api.github.com/repos/saikiranmandiga/Cybersecurity/contents/articles/${slug}.html`, {
             method: 'PUT',
