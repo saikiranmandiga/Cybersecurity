@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Knowledge Base - SK Cyberops</title>
+    <title>New Knowledge Base Article - SK Cyberops KB</title>
     
     <!-- Central Portfolio Configuration -->
-    <script src="./config.js"></script>
+    <script src="../config.js"></script>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -55,11 +55,6 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .neon-text-green {
-            color: #00ffcc;
-            text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
         }
 
         /* Markdown-style content formatting for Gemini generated text */
@@ -142,43 +137,79 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <!-- Logo Binding via config.js -->
-                <div class="flex-shrink-0 flex items-center space-x-3 cursor-pointer" onclick="window.location.href='index.html'">
-                    <img src="./logo.svg" alt="SK Cyberops Logo" class="w-8 h-8 md:w-10 md:h-10">
+                <div class="flex-shrink-0 flex items-center space-x-3 cursor-pointer" onclick="window.location.href='../index.html'">
+                    <img src="../logo.svg" alt="SK Cyberops Logo" class="w-8 h-8 md:w-10 md:h-10">
                     <span id="nav-cfg-name" class="font-bold text-white text-lg md:text-xl tracking-widest font-mono uppercase">SK CYBEROPS</span>
                 </div>
                 
                 <!-- Desktop Menu -->
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-8 font-mono text-sm">
-                        <a href="index.html" class="text-gray-300 hover:text-[#00ffcc] transition-colors"><i class="fa-solid fa-house mr-1"></i> Dashboard</a>
-                        <a href="threat-map.html" class="text-gray-300 hover:text-[#00ffcc] transition-colors"><i class="fa-solid fa-earth-americas mr-1"></i> Global Threats</a>
-                        <a href="soc-simulator.html" class="text-gray-300 hover:text-[#00ffcc] transition-colors"><i class="fa-solid fa-shield-virus mr-1"></i> SOC Simulator</a>
-                        <a href="knowledge-base.html" class="text-[#00ffcc] border-b-2 border-[#00ffcc] pb-1"><i class="fa-solid fa-book-journal-whills mr-1"></i> Knowledge Base</a>
+                        <a href="../index.html" class="text-gray-300 hover:text-[#00ffcc] transition-colors"><i class="fa-solid fa-house mr-1"></i> Dashboard</a>
+                        <a href="../threat-map.html" class="text-gray-300 hover:text-[#00ffcc] transition-colors"><i class="fa-solid fa-earth-americas mr-1"></i> Global Threats</a>
+                        <a href="../soc-simulator.html" class="text-gray-300 hover:text-[#00ffcc] transition-colors"><i class="fa-solid fa-shield-virus mr-1"></i> SOC Simulator</a>
+                        <a href="../knowledge-base.html" class="text-[#00ffcc] border-b-2 border-[#00ffcc] pb-1"><i class="fa-solid fa-book-journal-whills mr-1"></i> Knowledge Base</a>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content Container (Index View) -->
-    <main class="flex-grow pt-32 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+    <!-- Main Content Container -->
+    <main class="flex-grow pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-8">
         
-        <header class="mb-12 text-center md:text-left border-b border-gray-800/50 pb-8">
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight mono uppercase"><i class="fa-solid fa-book-journal-whills mr-3 text-[#00ffcc]"></i> Knowledge Base</h1>
-            <p class="text-lg text-gray-400">Technical insights, security playbooks, and research articles.</p>
-        </header>
+        <!-- Sidebar Navigation -->
+        <aside class="w-full lg:w-1/4 hidden lg:block">
+            <div class="sticky top-28 glass-panel p-5 rounded-lg">
+                <a href="../knowledge-base.html" class="text-xs font-mono text-gray-500 hover:text-[#00ffcc] mb-6 inline-block transition-colors"><i class="fa-solid fa-arrow-left mr-1"></i> Back to Directory</a>
+                <h3 class="text-white font-mono uppercase text-sm mb-4 pb-2 border-b border-gray-800 tracking-wider"><i class="fa-solid fa-folder-tree mr-2 text-[#0088ff]"></i> Articles</h3>
+                <ul id="sidebar-directory" class="space-y-2 text-sm text-gray-400">
+                    <!-- Javascript populates this -->
+                </ul>
+            </div>
+        </aside>
 
-        <!-- Dynamic Grid for Articles -->
-        <div id="kb-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- JavaScript will populate cards here -->
-        </div>
-        
+        <!-- Article Area -->
+        <article class="w-full lg:w-3/4">
+            
+            <!-- Article Header -->
+            <header class="mb-8 border-b border-gray-800/50 pb-6">
+                <div class="flex items-center gap-3 mb-4 text-xs font-mono">
+                    <span class="bg-[#0088ff]/20 text-[#0088ff] border border-[#0088ff]/30 px-2 py-1 rounded">Category</span>
+                    <span class="text-gray-500"><i class="fa-regular fa-clock mr-1"></i> 5 min read</span>
+                    <span class="text-gray-500"><i class="fa-regular fa-calendar mr-1"></i> Today's Date</span>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">Your New Article Title</h1>
+                
+                <div class="mt-6 flex gap-4">
+                    <button class="text-sm bg-white/5 hover:bg-white/10 border border-gray-700 text-gray-300 py-1.5 px-4 rounded transition-colors" onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied!')">
+                        <i class="fa-solid fa-link mr-2"></i> Copy Link
+                    </button>
+                </div>
+            </header>
+
+            <!-- Gemini Generated Content Area -->
+            <!-- Instructions for USER: Paste the Markdown from Gemini directly inside this container -->
+            <div class="gemini-content space-y-6">
+                
+                <!-- PASTE GEMINI HTML HERE -->
+
+                <h2>New Content Block</h2>
+                <p>Start writing your new findings here or have an AI tool generate the HTML formatted content for this section.</p>
+
+                <div class="tech-block success">
+                    <h4 class="text-[#10b981] mb-2">Example Command</h4>
+                    <pre><code class="language-bash">echo "Hello World"</code></pre>
+                </div>
+
+            </div>
+
+        </article>
     </main>
 
     <!-- Footer -->
     <footer class="border-t border-gray-800/50 bg-black/40 mt-12 py-8 text-center text-sm font-mono text-gray-500">
         <p>SK Cyberops Knowledge Base &copy; 2024</p>
-        <p class="mt-2 text-xs opacity-50">Content optimized for Gemini injection.</p>
     </footer>
 
     <!-- Prism.js for Code Highlighting -->
@@ -186,6 +217,33 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
     
     <!-- Config Binding Script -->
-    <!-- Grid rendering logic is now handled globally in config.js module -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if(window.portfolioConfig) {
+                const navNameEL = document.getElementById('nav-cfg-name');
+                if(navNameEL && portfolioConfig.name) navNameEL.innerText = "SK CYBEROPS"; 
+
+                // Populate Sidebar Directory
+                const sidebarDir = document.getElementById('sidebar-directory');
+                if(sidebarDir && portfolioConfig.knowledgeBase) {
+                    const currentFile = window.location.pathname.split('/').pop();
+
+                    portfolioConfig.knowledgeBase.forEach(article => {
+                        const linkTarget = "../" + article.file;
+                        const isCurrent = article.file.endsWith(currentFile);
+                        const activeClass = isCurrent ? "text-[#00ffcc] bg-white/5" : "text-gray-400 hover:text-white hover:bg-white/5";
+
+                        sidebarDir.innerHTML += `
+                            <li>
+                                <a href="${linkTarget}" class="block w-full text-left py-2 px-3 rounded transition-colors ${activeClass}">
+                                    <i class="fa-solid ${article.icon} mr-2 opacity-70"></i> ${article.title}
+                                </a>
+                            </li>
+                        `;
+                    });
+                }
+            }
+        });
+    </script>
 </body>
 </html>

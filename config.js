@@ -68,6 +68,37 @@ const portfolioConfig = {
             color: "#0088ff",
             description: "Automated vulnerability detection workflows and compliance reporting by integrating <strong class='text-white'>Splunk</strong> analytics with <strong class='text-white'>Qualys</strong> vulnerability management suites, enhancing incident detection speeds across financial perimeters."
         }
+    ],
+
+    // Knowledge Base Articles Registry
+    knowledgeBase: [
+        {
+            id: "cert-formats",
+            title: "Understanding Certificate File Formats",
+            category: "Cryptography",
+            readTime: "10 min read",
+            date: "Oct 24, 2023",
+            file: "articles/cert-formats.html",
+            icon: "fa-certificate"
+        },
+        {
+            id: "pcap-analysis",
+            title: "PCAP Analysis Basics",
+            category: "Network Forensics",
+            readTime: "15 min read",
+            date: "Nov 02, 2023",
+            file: "articles/pcap-analysis.html",
+            icon: "fa-network-wired"
+        },
+        {
+            id: "firewall-syntax",
+            title: "Firewall Rule Syntax",
+            category: "SecOps",
+            readTime: "8 min read",
+            date: "Nov 15, 2023",
+            file: "articles/firewall-syntax.html",
+            icon: "fa-shield-halved"
+        }
     ]
 };
 
@@ -177,4 +208,54 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 3000 + (Math.random() * 1000));
         });
     }
+
+    // 7. Knowledge Base Grid (Index Page)
+    const kbGrid = document.getElementById('kb-grid');
+    if(kbGrid && portfolioConfig.knowledgeBase) {
+        kbGrid.innerHTML = '';
+        portfolioConfig.knowledgeBase.forEach(article => {
+            // If on the index page, we need 'articles/' prefix. If already in articles/, we need just the filename.
+            const isIndexPage = window.location.pathname.endsWith('knowledge-base.html');
+            const linkTarget = isIndexPage ? article.file : "../" + article.file;
+
+            kbGrid.innerHTML += `
+                <a href="${linkTarget}" class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform duration-300 border-t border-[#0088ff]/30 hover:border-[#00ffcc] group block">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-full bg-black/50 border border-gray-700 flex items-center justify-center text-xl text-[#0088ff] group-hover:text-[#00ffcc] transition-colors">
+                            <i class="fa-solid ${article.icon}"></i>
+                        </div>
+                        <span class="text-xs font-mono text-gray-500">${article.date}</span>
+                    </div>
+                    <span class="inline-block px-2 py-1 bg-white/5 border border-gray-700 rounded text-[10px] uppercase tracking-wider mono text-gray-400 mb-3">${article.category}</span>
+                    <h3 class="text-xl font-bold text-white mb-2 group-hover:text-[#00ffcc] transition-colors">${article.title}</h3>
+                    <div class="flex items-center text-xs text-gray-500 mono mt-4">
+                        <i class="fa-regular fa-clock mr-1"></i> ${article.readTime}
+                        <span class="ml-auto text-[#0088ff] group-hover:text-[#00ffcc]">Read Article <i class="fa-solid fa-arrow-right ml-1"></i></span>
+                    </div>
+                </a>
+            `;
+        });
+    }
+
+    // 8. Knowledge Base Sidebar Directory (Article Pages)
+    const sidebarDir = document.getElementById('sidebar-directory');
+    if(sidebarDir && portfolioConfig.knowledgeBase) {
+        sidebarDir.innerHTML = '';
+        const currentFile = window.location.pathname.split('/').pop();
+
+        portfolioConfig.knowledgeBase.forEach(article => {
+            const linkTarget = "../" + article.file;
+            const isCurrent = article.file.endsWith(currentFile);
+            const activeClass = isCurrent ? "text-[#00ffcc] bg-white/5" : "text-gray-400 hover:text-white hover:bg-white/5";
+
+            sidebarDir.innerHTML += `
+                <li>
+                    <a href="${linkTarget}" class="block w-full text-left py-2 px-3 rounded transition-colors ${activeClass}">
+                        <i class="fa-solid ${article.icon} mr-2 opacity-70"></i> ${article.title}
+                    </a>
+                </li>
+            `;
+        });
+    }
+
 });
