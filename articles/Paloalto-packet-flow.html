@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Palo Alto Architecture & Packet Flow - SK Cyberops KB</title>
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
     
     <script src="../config.js"></script>
 
@@ -247,6 +248,12 @@
 
             </div>
 
+        
+            <!-- Discussion Section -->
+            <section class="mt-16 pt-8 border-t border-gray-800">
+                <h3 class="text-xl neon-text-blue mb-8 mono uppercase"><i class="fa-solid fa-comments mr-2"></i> Mission Debrief (Comments)</h3>
+                <div id="disqus_thread"></div>
+            </section>
         </article>
     </main>
 
@@ -285,5 +292,21 @@
             }
         });
     </script>
+
+    <!-- Disqus Comments Integration -->
+    <script>
+        var disqus_config = function () {
+            this.page.url = window.location.href;  
+            this.page.identifier = window.location.pathname; 
+        };
+        (function() { 
+            var d = document, s = d.createElement('script');
+            s.src = 'https://sk-cyberops.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </body>
 </html>
+
