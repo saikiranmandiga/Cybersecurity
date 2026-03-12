@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Paloalo firewall are next gen firewalls using user-id content-id app-id technology compared to other competitors? - SK Cyberops KB</title>
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
+    
+    <!-- Central Portfolio Configuration -->
+    <script src="../config.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkblue: '#040d1a',
+                        neon: '#00ffcc',
+                        neonblue: '#0088ff',
+                        glassbg: 'rgba(10, 15, 30, 0.7)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Menlo', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Prism.js for Code Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-twilight.min.css" rel="stylesheet" />
+    
+    <!-- RSS Discovery -->
+    <link rel="alternate" type="application/rss+xml" title="SK Cyberops Intelligence Feed" href="../rss.xml">
+    
+    <style>
+        body {
+            background-color: #040d1a;
+            color: #e2e8f0;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 255, 204, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(0, 136, 255, 0.03) 0%, transparent 50%);
+            background-attachment: fixed;
+            overflow-x: hidden;
+        }
+
+        .glass-panel {
+            background: rgba(10, 15, 30, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Markdown-style content formatting for Gemini generated text */
+        .gemini-content h2 {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .gemini-content h3 {
+            color: #0088ff;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .gemini-content p {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+            color: #cbd5e1;
+        }
+
+        .gemini-content ul, .gemini-content ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            color: #cbd5e1;
+        }
+
+        .gemini-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .gemini-content ul { list-style-type: disc; }
+        .gemini-content ul li::marker { color: #0088ff; }
+
+        /* Tech Blocks resembling reference site */
+        .tech-block {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #0088ff;
+        }
+        
+        .tech-block.error { border-left-color: #ef4444; }
+        .tech-block.success { border-left-color: #10b981; }
+        .tech-block.warning { border-left-color: #f59e0b; }
+
+        .tech-block h4 {
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        /* Inline code */
+        .gemini-content p code, .gemini-content li code {
+            background: rgba(0, 0, 0, 0.4);
+            color: #00ffcc;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            border: 1px solid rgba(0,255,204,0.2);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 glass-panel border-b-0 border-t-0 border-l-0 border-r-0 border-b border-gray-800/50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo Binding via config.js -->
+                <div class="flex-shrink-0 flex items-center space-x-3 cursor-pointer" onclick="window.location.href='../index.html'">
+                    <img src="../logo.svg" alt="SK Cyberops Logo" class="w-8 h-8 md:w-10 md:h-10">
+                    <span id="nav-cfg-name" class="font-bold text-white text-lg md:text-xl tracking-widest font-mono uppercase">SK CYBEROPS</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8 font-mono text-sm">
+                        <a href="../index.html" class="text-gray-300 hover:text-[#00ffcc] transition-colors"><i class="fa-solid fa-house mr-1"></i> Dashboard</a>
+                        <a href="../threat-map.html" class="text-gray-300 hover:text-[#00ffcc] transition-colors"><i class="fa-solid fa-earth-americas mr-1"></i> Global Threats</a>
+                        <a href="../soc-simulator.html" class="text-gray-300 hover:text-[#00ffcc] transition-colors"><i class="fa-solid fa-shield-virus mr-1"></i> SOC Simulator</a>
+                        <a href="../knowledge-base.html" class="text-[#00ffcc] border-b-2 border-[#00ffcc] pb-1"><i class="fa-solid fa-book-journal-whills mr-1"></i> Knowledge Base</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-8">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-full lg:w-1/4 hidden lg:block">
+            <div class="sticky top-28 glass-panel p-5 rounded-lg">
+                <a href="../knowledge-base.html" class="text-xs font-mono text-gray-500 hover:text-[#00ffcc] mb-6 inline-block transition-colors"><i class="fa-solid fa-arrow-left mr-1"></i> Back to Directory</a>
+                <h3 class="text-white font-mono uppercase text-sm mb-4 pb-2 border-b border-gray-800 tracking-wider"><i class="fa-solid fa-folder-tree mr-2 text-[#0088ff]"></i> Articles</h3>
+                <ul id="sidebar-directory" class="space-y-2 text-sm text-gray-400">
+                    <!-- Javascript populates this -->
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Article Area -->
+        <article class="w-full lg:w-3/4">
+            
+            <!-- Article Header -->
+            <header class="mb-8 border-b border-gray-800/50 pb-6">
+                <div class="flex items-center gap-3 mb-4 text-xs font-mono">
+                    <span class="bg-[#0088ff]/20 text-[#0088ff] border border-[#0088ff]/30 px-2 py-1 rounded">Category</span>
+                    <span class="text-gray-500"><i class="fa-regular fa-clock mr-1"></i> 5 min read</span>
+                    <span class="text-gray-500"><i class="fa-regular fa-calendar mr-1"></i> Today's Date</span>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">Your New Article Title</h1>
+                
+                <div class="mt-6 flex gap-4">
+                    <button class="text-sm bg-white/5 hover:bg-white/10 border border-gray-700 text-gray-300 py-1.5 px-4 rounded transition-colors" onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied!')">
+                        <i class="fa-solid fa-link mr-2"></i> Copy Link
+                    </button>
+                </div>
+            </header>
+
+            <!-- Gemini Generated Content Area -->
+            <!-- Instructions for USER: Paste the Markdown from Gemini directly inside this container -->
+            <div class="gemini-content space-y-6">
+                
+                <h2>Palo Alto Networks Next-Generation Firewalls: Unpacking User-ID, Content-ID, and App-ID for Advanced Security</h2>
+
+<p>As cybersecurity threats continue to evolve in sophistication and volume, traditional port-and-protocol-based firewalls have become increasingly inadequate for securing modern networks. The paradigm shift to application-centric traffic, often traversing standard ports like 80 or 443, demands a deeper level of inspection and control. This article delves into how Palo Alto Networks Next-Generation Firewalls (NGFWs) address these challenges by leveraging their core technologies: App-ID, User-ID, and Content-ID, and how this approach provides a significant advantage over many competitors.</p>
+
+<h3>The Limitations of Traditional Firewalls</h3>
+<p>Historically, firewalls operated on a simple premise: permit or deny traffic based on IP addresses, ports, and protocols (e.g., TCP, UDP, ICMP). This approach worked well when applications had dedicated, well-known ports. However, modern applications:</p>
+<ul>
+    <li>Often use dynamic ports.</li>
+    <li>Can tunnel over common ports (e.g., Skype over port 80/443).</li>
+    <li>Frequently use encryption, making payload inspection difficult.</li>
+    <li>Allow users to access a wide range of web-based services, blurring the lines between legitimate business use and shadow IT.</li>
+</ul>
+<p>This "open port, allow all" mentality creates significant blind spots, making it challenging to enforce granular security policies, identify specific application usage, or prevent advanced threats.</p>
+
+<h3>Palo Alto Networks' Foundational Technologies: The Three IDs</h3>
+<p>Palo Alto Networks revolutionizes firewall capabilities by shifting the focus from ports to applications, users, and content. Their unique Single-Pass Parallel Processing (SP3) architecture ensures that all three "IDs" are applied simultaneously and efficiently to every packet, providing comprehensive visibility and control without significant performance degradation.</p>
+
+<h4>1. App-ID: Application-Aware Security</h4>
+<p>App-ID is the cornerstone of Palo Alto Networks' NGFW. Instead of relying on port numbers, App-ID identifies applications regardless of port, protocol, evasive tactics, or encryption. This allows for precise control over application usage across the network.</p>
+<ul>
+    <li><strong>How it Works:</strong> App-ID uses a multi-layered approach to identify applications:
+        <ol>
+            <li><strong>Application Signatures:</strong> It analyzes packet headers and payloads against a continuously updated database of thousands of application signatures.</li>
+            <li><strong>Decryption:</strong> For encrypted SSL/TLS traffic, the firewall can decrypt the traffic (with proper certificates) to identify the underlying application.</li>
+            <li><strong>Heuristics:</strong> It uses behavioral analysis for unknown applications or variations.</li>
+            <li><strong>Protocol Decoders:</strong> Understanding common protocols (like HTTP, FTP, DNS) helps in identifying the specific applications leveraging them.</li>
+        </ol>
+    </li>
+    <li><strong>Benefits:</strong>
+        <ul>
+            <li><strong>Granular Control:</strong> Block specific risky applications (e.g., Tor, peer-to-peer file sharing) while allowing necessary business applications, even if they use the same port.</li>
+            <li><strong>Reduced Attack Surface:</strong> Eliminates the need to open broad port ranges, preventing unauthorized applications from running.</li>
+            <li><strong>Improved Visibility:</strong> Provides clear insights into what applications are running on the network, who is using them, and how much bandwidth they consume.</li>
+            <li><strong>Policy Simplification:</strong> Policies can be written based on applications (e.g., "Allow Salesforce," "Deny Facebook-posting") rather than obscure port numbers.</li>
+        </ul>
+    </li>
+</ul>
+<div class="tech-block">
+    <h4 class="text-[#0088ff] mb-2">Example: Allowing Web Browsing but Blocking Facebook Posting</h4>
+    <p>A typical security policy demonstrating App-ID granularity:</p>
+    <pre><code class="language-bash"># Instead of allowing 'tcp/80' and 'tcp/443' broadly,
+# App-ID allows us to differentiate:
+# Policy 1: Allow general web browsing
+# Source: Internal_Users
+# Destination: Any
+# Application: web-browsing, ssl
+# Action: Allow
+
+# Policy 2: Block specific high-risk or non-business applications
+# Source: Internal_Users
+# Destination: Any
+# Application: facebook-posting, bittorrent, tor
+# Action: Deny
+
+# Policy 3: Allow specific business applications
+# Source: Marketing_Dept
+# Destination: Any
+# Application: salesforce, zoom
+# Action: Allow
+</code></pre>
+</div>
+
+<h4>2. User-ID: User-Aware Security</h4>
+<p>User-ID integrates the firewall with directory services (like Active Directory, LDAP) and other authentication sources to map IP addresses to specific usernames. This transforms static IP-based security policies into dynamic, user-based policies.</p>
+<ul>
+    <li><strong>How it Works:</strong> User-ID employs several methods to obtain IP-to-user mappings:
+        <ul>
+            <li><strong>Active Directory Integration:</strong> Monitors AD servers for login events.</li>
+            <li><strong>Terminal Services Agent:</strong> For environments where multiple users share a single server IP.</li>
+            <li><strong>Authentication Policies:</strong> Forces users to authenticate via the firewall (captive portal).</li>
+            <li><strong>Syslog and Authentication Probes:</strong> Extracts user information from syslog messages or probes authentication systems.</li>
+            <li><strong>X-Forwarded-For (XFF) Header:</strong> For web proxies, extracts user details from HTTP headers.</li>
+        </ul>
+    </li>
+    <li><strong>Benefits:</strong>
+        <ul>
+            <li><strong>User-Based Policies:</strong> Enforce security based on individual users or user groups, regardless of their device or location within the network.</li>
+            <li><strong>Improved Auditing and Forensics:</strong> All logs and reports show usernames instead of just IP addresses, simplifying incident response.</li>
+            <li><strong>Simplified Management:</strong> Changes to user roles or groups in AD automatically translate to policy enforcement on the firewall.</li>
+            <li><strong>Enhanced Compliance:</strong> Meet regulatory requirements by demonstrating granular control over user access.</li>
+        </ul>
+    </li>
+</ul>
+<div class="tech-block">
+    <h4 class="text-[#0088ff] mb-2">Example: User-Based Access Policy and Verifying Mappings</h4>
+    <p>A policy allowing only the 'Developers' group to access a specific development server:</p>
+    <pre><code class="language-bash"># Policy: Dev_Server_Access
+# Source User: Developers (from Active Directory)
+# Source Zone: Internal
+# Destination Zone: DMZ
+# Destination IP: 192.168.10.50 (Dev Server)
+# Application: ssh, rdp, web-browsing
+# Action: Allow
+
+# CLI command to check IP-to-User mappings:
+show user ip-user-mapping all
+
+# To check mappings for a specific IP:
+show user ip-user-mapping ip 10.0.0.100
+
+# To refresh mappings for a specific user:
+clear user-cache user username@domain.com
+</code></pre>
+</div>
+
+<h4>3. Content-ID: Threat Prevention and Data Filtering</h4>
+<p>Content-ID focuses on the actual content of the traffic, providing advanced threat prevention, URL filtering, and data loss prevention (DLP).</p>
+<ul>
+    <li><strong>How it Works:</strong> Content-ID inspects allowed traffic for known and unknown threats, sensitive data, and undesirable web content:
+        <ul>
+            <li><strong>Threat Prevention:</strong> Utilizes a comprehensive database of signatures for known vulnerabilities, exploits, malware, and spyware.</li>
+            <li><strong>URL Filtering:</strong> Categorizes URLs and applies policies based on categories (e.g., block "gambling," "pornography," "malware sites").</li>
+            <li><strong>Anti-Virus & Anti-Spyware:</strong> Scans files and executables for malicious code.</li>
+            <li><strong>WildFire Integration:</strong> Submits unknown files and suspicious links to a cloud-based sandbox for dynamic analysis, generating new signatures in minutes.</li>
+            <li><strong>Data Filtering (DLP):</strong> Scans for specific patterns or keywords in outbound traffic to prevent sensitive data (credit card numbers, PII) from leaving the network.</li>
+        </ul>
+    </li>
+    <li><strong>Benefits:</strong>
+        <ul>
+            <li><strong>Advanced Threat Protection:</strong> Defends against a wide range of cyberattacks, including zero-day threats through WildFire.</li>
+            <li><strong>Data Loss Prevention:</strong> Prevents unauthorized exfiltration of sensitive information.</li>
+            <li><strong>Compliance:</strong> Helps meet compliance mandates by controlling access to inappropriate web content and protecting data.</li>
+            <li><strong>Reduced Malware Infections:</strong> Proactive identification and blocking of malicious files and websites.</li>
+        </ul>
+    </li>
+</ul>
+<div class="tech-block">
+    <h4 class="text-[#0088ff] mb-2">Example: Enforcing Threat Prevention and URL Filtering</h4>
+    <p>Content-ID components are typically applied via Security Profiles attached to security policies:</p>
+    <pre><code class="language-bash"># Security Policy Example: Internet_Access
+# Source: Internal_Users
+# Destination: Untrust
+# Application: web-browsing, ssl
+# Action: Allow
+# Profile Group: Default_Internet_Security
+
+# The 'Default_Internet_Security' Profile Group would include:
+# - Antivirus Profile: block all known viruses
+# - Anti-Spyware Profile: block C2 activity
+# - Vulnerability Protection Profile: prevent known exploits
+# - URL Filtering Profile: block 'malware', 'phishing', 'gambling' categories
+# - Data Filtering Profile: block Credit Card Numbers (CCN)
+# - WildFire Analysis Profile: submit unknown files for analysis
+</code></pre>
+</div>
+
+<h3>Palo Alto Networks vs. Competitors: The Integrated Advantage</h3>
+<p>While many cybersecurity vendors now offer features marketed as "next-generation," Palo Alto Networks' differentiation lies in its deeply integrated, purpose-built architecture:</p>
+<ul>
+    <li><strong>True Single-Pass Architecture (SP3):</strong> Unlike some competitors that might chain multiple inspection engines (e.g., firewall, IPS, antivirus, URL filter) sequentially, Palo Alto's SP3 engine processes all traffic once, simultaneously applying App-ID, User-ID, and Content-ID. This eliminates performance bottlenecks and ensures consistent policy enforcement across all security functions. Competitors often struggle with performance as more features are enabled, or their integrations are less seamless, potentially leading to security gaps.</li>
+    <li><strong>Native Integration:</strong> App-ID, User-ID, and Content-ID are not bolt-on features but are fundamental to the firewall's operating system (PAN-OS). This native integration provides superior efficacy, real-time updates, and a unified policy framework. Other vendors may acquire technologies and integrate them, sometimes leading to disjointed management interfaces or compromises in performance.</li>
+    <li><strong>Visibility and Control:</strong> The combined power of the three IDs offers unparalleled visibility into who is on the network, what applications they are using, and what content is being transmitted. This empowers security teams to create highly granular, user- and application-centric policies that are impossible with traditional firewalls or less integrated NGFW solutions.</li>
+    <li><strong>Threat Intelligence:</strong> Palo Alto Networks' Unit 42 threat research team and the global WildFire community continuously feed threat intelligence back into the firewall, ensuring that App-ID signatures, threat prevention, and URL filtering databases are always up-to-date against the latest threats.</li>
+</ul>
+
+<h3>Conclusion</h3>
+<p>Palo Alto Networks NGFWs represent a significant leap forward in network security. By shifting the security paradigm from port-based to application-, user-, and content-based control, they provide a robust and flexible framework to defend against modern threats. The integrated power of App-ID, User-ID, and Content-ID, underpinned by a single-pass architecture, offers superior visibility, granular control, and advanced threat prevention capabilities that set them apart in a competitive market. For organizations serious about securing their digital assets and enabling safe application usage, understanding and leveraging these core technologies is paramount for building a resilient cybersecurity posture.</p>
+
+            </div>
+
+            <!-- Subscription Box -->
+            <section class="mt-16 p-8 glass-panel border-t-2 border-[#00ffcc] relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <i class="fa-solid fa-envelope-open-text text-6xl text-[#00ffcc]"></i>
+                </div>
+                <div class="relative z-10">
+                    <h3 class="text-xl font-bold text-white mb-2 mono uppercase tracking-wider">CyberOps Intelligence Report</h3>
+                    <p class="text-gray-400 text-sm mb-6 max-w-xl">
+                        Subscribe to receive high-fidelity technical deep-dives and security research directly in your inbox. No noise, just raw intelligence.
+                    </p>
+                    <form action="https://api.follow.it/subscription-form/aXNsWWNSVk5LQ09hN0o3K0Jpc0VHVFBLakhKNW5iV0xxMlQwYmUrMEtnSFNQRUs5anhROVJiWGQ1V2V3K2ZxdWFCTkNtbGk0RGFiSDBEZmNmQXl0OU1WYllJekJrWlozZmIrWGNmNTNHcWVSSUF1NmJPOTliWE5aeGVpbGJmYmd8ZTZkM2Y0cm5NYWc1Tmp4MGhKQnJ3a0QveTBmaTA4T3pxbjVRdkwyWEZxdz0=/8" method="post" class="flex flex-col sm:flex-row gap-3">
+                        <input type="email" name="email" placeholder="operator@secure-domain.com" required
+                            class="flex-1 bg-black/60 border border-gray-700 rounded-lg px-4 py-3 text-sm mono text-[#00ffcc] focus:outline-none focus:border-[#00ffcc] transition-colors">
+                        <button type="submit" 
+                            class="bg-[#00ffcc] hover:bg-[#39ff14] text-black font-bold py-3 px-8 rounded-lg transition-all duration-300 mono uppercase text-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> Subscribe
+                        </button>
+                    </form>
+                    <p class="mt-4 text-[10px] text-gray-500 uppercase tracking-widest mono flex items-center justify-between w-full">
+                        <span>SECURE TRANSMISSION // ARCHIVE NOTIFICATIONS ONLY</span>
+                        <a href="../rss.xml" class="text-[#00ffcc] hover:text-[#39ff14] transition-colors"><i class="fa-solid fa-rss mr-1"></i> Follow via RSS</a>
+                    </p>
+                </div>
+            </section>
+
+            <!-- Discussion Section -->
+            <section class="mt-16 pt-8 border-t border-gray-800">
+                <h3 class="text-xl neon-text-blue mb-8 mono uppercase"><i class="fa-solid fa-comments mr-2"></i> Mission Debrief (Comments)</h3>
+                <div id="disqus_thread"></div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800/50 bg-black/40 mt-12 py-8 text-center text-sm font-mono text-gray-500">
+        <p>SK Cyberops Knowledge Base &copy; 2024</p>
+    </footer>
+
+    <!-- Prism.js for Code Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    
+    <!-- Config Binding Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if(window.portfolioConfig) {
+                const navNameEL = document.getElementById('nav-cfg-name');
+                if(navNameEL && portfolioConfig.name) navNameEL.innerText = "SK CYBEROPS"; 
+
+                // Populate Sidebar Directory
+                const sidebarDir = document.getElementById('sidebar-directory');
+                if(sidebarDir && portfolioConfig.knowledgeBase) {
+                    const currentFile = window.location.pathname.split('/').pop();
+
+                    portfolioConfig.knowledgeBase.forEach(article => {
+                        const linkTarget = "../" + article.file;
+                        const isCurrent = article.file.endsWith(currentFile);
+                        const activeClass = isCurrent ? "text-[#00ffcc] bg-white/5" : "text-gray-400 hover:text-white hover:bg-white/5";
+
+                        sidebarDir.innerHTML += `
+                            <li>
+                                <a href="${linkTarget}" class="block w-full text-left py-2 px-3 rounded transition-colors ${activeClass}">
+                                    <i class="fa-solid ${article.icon} mr-2 opacity-70"></i> ${article.title}
+                                </a>
+                            </li>
+                        `;
+                    });
+                }
+            }
+        });
+    </script>
+
+    <!-- Disqus Comments Integration -->
+    <script>
+        var disqus_config = function () {
+            this.page.url = window.location.href;  
+            this.page.identifier = window.location.pathname; 
+        };
+        (function() { 
+            var d = document, s = d.createElement('script');
+            s.src = 'https://sk-cyberops.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</body>
+</html>
