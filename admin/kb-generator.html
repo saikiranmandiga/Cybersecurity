@@ -173,6 +173,39 @@
 
     </div>
 
+    <script>
+        // --- INLINE AUTHENTICATION GATE ---
+        const VALID_USER = "saikiran";
+        const VALID_PASS = "cyberops7729";
+
+        const authGate = document.getElementById('auth-gate');
+        const mainPortal = document.getElementById('main-portal');
+        const loginUser = document.getElementById('login-user');
+        const loginPass = document.getElementById('login-pass');
+        const btnLogin = document.getElementById('btn-login');
+
+        // Check if already authenticated this session
+        if (sessionStorage.getItem('sk_admin_authenticated') === 'true') {
+            authGate.classList.add('hidden');
+            mainPortal.classList.remove('hidden');
+        }
+
+        btnLogin.addEventListener('click', () => {
+            const user = loginUser.value.trim();
+            const pass = loginPass.value.trim();
+
+            console.log("Auth Attempt:", { user });
+
+            if (user === VALID_USER && pass === VALID_PASS) {
+                sessionStorage.setItem('sk_admin_authenticated', 'true');
+                authGate.classList.add('hidden');
+                mainPortal.classList.remove('hidden');
+            } else {
+                alert("ACCESS DENIED: Invalid Operator ID or Access Key.");
+                loginPass.value = '';
+            }
+        });
+    </script>
     <script src="kb-generator.js"></script>
 </body>
 </html>
