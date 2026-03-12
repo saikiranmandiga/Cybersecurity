@@ -9,7 +9,7 @@
     <atom:link href="https://skcyberops.com/rss.xml" rel="self" type="application/rss+xml" />
 
     <item>
-        <title>Fortigate Architecture & Packet FLow</title>
+        <title>Fortigate Architecture &amp; Packet FLow</title>
         <link>https://skcyberops.com/articles/fortigate-architecture-packet-flow.html</link>
         <description>Technical breakdown of Fortigate Networks firewall architecture and packet flow.</description>
         <pubDate>Thu, 12 Mar 2026 18:55:00 GMT</pubDate>
@@ -82,4 +82,5 @@
 
 </channel>
 </rss>
+
 
