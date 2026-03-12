@@ -7,11 +7,11 @@ const portfolioConfig = {
     title: "Cybersecurity Engineer",
     subtitle: "Sr. Cybersecurity Consultant",
     tagline: "Vigilant Defense. Resilient Operations.",
-    
+
     // Contact Information
     contact: {
         location: "Katy, TX",
-        email: "saikiranmandiga85@gmail.com",
+        email: "saikiranmandiga@skcyberops.com",
         phone: "6303283679"
     },
 
@@ -29,7 +29,7 @@ const portfolioConfig = {
         "AWS Cloud Security",
         "Splunk",
         "Tenable",
-        "Wireshark"
+        "CyberArk"
     ],
 
     // Homelab & Infrastructure Projects
@@ -74,7 +74,7 @@ const portfolioConfig = {
 // --- DATA BINDING LOGIC --- //
 // This function maps the config above to the HTML elements on the page.
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     // Helper to safely set text content
     const setText = (id, text) => {
         const el = document.getElementById(id);
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setText('cfg-title', portfolioConfig.title);
     setText('cfg-subtitle', portfolioConfig.subtitle);
     setText('cfg-tagline', portfolioConfig.tagline);
-    
+
     // 2. Contact binding
     setText('cfg-location', portfolioConfig.contact.location);
     setText('cfg-email', portfolioConfig.contact.email);
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
         portfolioConfig.experience.forEach((exp, idx) => {
             // Setup dynamic ID for stock ticker
             const priceId = `stock-price-${idx}`;
-            
+
             expContainer.innerHTML += `
                 <article class="physics-item p-5 glass-panel border-l-4 hover:bg-white/5 transition-colors relative overflow-hidden" style="border-left-color: ${exp.color}">
                     <div class="absolute top-0 right-0 p-2 opacity-10"><i class="fa-solid ${exp.icon} text-6xl"></i></div>
@@ -157,16 +157,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // Initialize Stock Ticker simulation for this item
             setInterval(() => {
                 const priceEl = document.getElementById(priceId);
-                if(!priceEl) return;
-                
+                if (!priceEl) return;
+
                 let current = parseFloat(priceEl.innerText);
                 let change = (Math.random() * 0.8) - 0.35; // slight upward bias
                 let newPrice = (current + change).toFixed(2);
                 priceEl.innerText = newPrice;
-                
+
                 const containerEl = document.getElementById(`${priceId}-container`);
                 const iconEl = document.getElementById(`${priceId}-icon`);
-                
+
                 if (change >= 0) {
                     containerEl.className = 'text-xs font-bold font-mono text-green-400 flex items-center mt-0.5';
                     iconEl.className = 'fa-solid fa-caret-up ml-1 text-[10px]';
