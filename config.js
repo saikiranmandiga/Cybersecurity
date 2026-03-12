@@ -98,6 +98,15 @@ const portfolioConfig = {
             date: "Nov 15, 2023",
             file: "articles/firewall-syntax.html",
             icon: "fa-shield-halved"
+        },
+        {
+            id: "palo-alto-packet-flow",
+            title: "Palo Alto Architecture & Packet Flow",
+            category: "Network Security",
+            readTime: "8 min read",
+            date: "March 11, 2026",
+            file: "articles/Paloalto-packet-flow.html",
+            icon: "fa-server"
         }
     ]
 };
