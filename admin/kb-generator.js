@@ -175,6 +175,33 @@ btnGenerate.addEventListener('click', async () => {
 
         if (!configPutRes.ok) throw new Error("Failed to update config.js array on GitHub.");
 
+        // --- 5. UPDATE KNOWLEDGE-BASE.HTML CACHE BUSTER ---
+        logAction(`Fetching knowledge-base.html to increment cache buster...`);
+        const indexGetRes = await fetch(`https://api.github.com/repos/saikiranmandiga/Cybersecurity/contents/knowledge-base.html`, { headers: ghHeaders });
+        if (!indexGetRes.ok) throw new Error("Could not fetch knowledge-base.html from repo.");
+        
+        const indexFileData = await indexGetRes.json();
+        let indexText = b64DecodeUnicode(indexFileData.content);
+        const indexSha = indexFileData.sha;
+
+        // Replace config.js?v=X with config.js?v=Timestamp to force browser update
+        const newVersion = new Date().getTime();
+        indexText = indexText.replace(/config\.js\?v=[0-9A-Za-z\.]+/, `config.js?v=${newVersion}`);
+
+        logAction(`Updating remote knowledge-base.html with new cache buster v=${newVersion}...`);
+        const indexPutRes = await fetch(`https://api.github.com/repos/saikiranmandiga/Cybersecurity/contents/knowledge-base.html`, {
+            method: 'PUT',
+            headers: ghHeaders,
+            body: JSON.stringify({
+                message: `fix(kb): increment cache buster for new article ${slug}`,
+                content: b64EncodeUnicode(indexText),
+                sha: indexSha,
+                branch: 'main'
+            })
+        });
+
+        if (!indexPutRes.ok) throw new Error("Failed to increment cache buster in knowledge-base.html.");
+
         logAction(`All operations completed successfully! GitHub Actions is now building the site.`, "success");
         
         // Reset button
