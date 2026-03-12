@@ -107,6 +107,15 @@ const portfolioConfig = {
             date: "March 11, 2026",
             file: "articles/Paloalto-packet-flow.html",
             icon: "fa-server"
+        },
+        {
+            id: "what-is-adcs",
+            title: "what is ADCS",
+            category: "Cryptography",
+            readTime: "6 min read",
+            date: "Mar 11, 2026",
+            file: "articles/what-is-adcs.html",
+            icon: "fa-microchip"
         }
     ]
 };
