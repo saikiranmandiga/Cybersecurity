@@ -63,7 +63,7 @@ const portfolioConfig = {
             basePrice: 54.32,
             icon: "fa-fire-extinguisher",
             color: "#00ffcc",
-            period: "Present (Houston, TX)",
+            period: "Houston, TX",
             description: "Configured and managed <strong class='text-white'>Palo Alto firewalls</strong> centrally through <strong class='text-white'>Panorama M-500</strong>. Implemented Global Protect VPNs ensuring secure remote access. Administered privileged access management (PAM) utilizing <strong class='text-white'>CyberArk</strong>, significantly reducing insider threat vectors.",
             bullets: []
         },
@@ -76,7 +76,7 @@ const portfolioConfig = {
             basePrice: 196.48,
             icon: "fa-building-columns",
             color: "#0088ff",
-            period: "(Houston, TX)",
+            period: "Jersey City, NJ",
             description: "Automated vulnerability detection workflows and compliance reporting by integrating <strong class='text-white'>Splunk</strong> analytics with <strong class='text-white'>Qualys</strong> vulnerability management suites, enhancing incident detection speeds across financial perimeters.",
             bullets: []
         },
@@ -89,20 +89,9 @@ const portfolioConfig = {
             basePrice: 65.80,
             icon: "fa-landmark",
             color: "#00a651",
-            period: "May 2021 – Sep 2021 · Mumbai, India",
-            description: "Led IT risk management initiatives across application and infrastructure security for new IT projects at one of Europe's largest financial institutions.",
-            bullets: [
-                "Application and infrastructure security risk assessment for new IT Projects.",
-                "Assessment for a major change in the application and infrastructure.",
-                "Register and track security recommendations & security exceptions.",
-                "Second-level review on security exceptions raised by business units.",
-                "Support product teams by conducting design reviews, threat modeling, security testing, and code reviews.",
-                "Monitoring compliance with NIST SP 800-53, ISO 27001, NERC, and other security frameworks.",
-                "Communicate effectively with both technical and non-technical individuals at all levels of the organization.",
-                "Assess risk of proposed changes to infrastructure, code, and connectivity.",
-                "Determine security violations and inefficiencies by conducting periodic audits.",
-                "Act as technical information security reviewer of performance reports, operating procedures and other documents."
-            ]
+            period: "Mumbai, India",
+            description: "Led IT risk assessments for new projects and major infrastructure changes at one of Europe's largest financial institutions. Monitored compliance with <strong class='text-white'>NIST SP 800-53, ISO 27001</strong>, and NERC frameworks. Conducted design reviews, threat modeling, and code reviews while communicating risk posture across all organizational levels.",
+            bullets: []
         },
         {
             company: "IDFC First Bank",
@@ -113,21 +102,9 @@ const portfolioConfig = {
             basePrice: 72.50,
             icon: "fa-shield-halved",
             color: "#ef4444",
-            period: "Dec 2019 – May 2021 · Mumbai, India",
-            description: "Secured enterprise banking infrastructure, managing firewall architectures and endpoint security across one of India's fastest-growing private sector banks.",
-            bullets: [
-                "Collaborate with network architects and security teams to develop firewall architecture and design solutions based on business requirements.",
-                "Analyze network traffic patterns and security needs to determine firewall placement and rule configuration.",
-                "Configure firewall policies, including interfaces, zones, security policies, NAT rules, and VPN tunnels.",
-                "Implement and maintain high availability and redundancy configurations.",
-                "Implementing McAfee Active Response (EDR Solution) across Workstation and test servers.",
-                "Investigate and troubleshoot firewall-related issues including connectivity, access control, and VPN problems.",
-                "Monitored client network with McAfee Threat Analyzer; used Tripwire IP 360 for vulnerability scanning.",
-                "Worked on log management using Tripwire Console and Tripwire Enterprise file integrity solutions.",
-                "Configured ArcSight connectors and loggers to add missing assets in ArcSight.",
-                "Worked with SIEM solutions: Rapid7 Nexpose, Forcepoint, and Splunk.",
-                "Direct experience monitoring, configuring, and maintaining enterprise-level proxy: McAfee Web Gateway, Cisco Iron Port WSA-S690."
-            ]
+            period: "Mumbai, India",
+            description: "Designed and managed <strong class='text-white'>Palo Alto, FortiGate</strong> firewall architectures with HA/redundancy configurations, NAT rules, and VPN tunnels. Deployed <strong class='text-white'>McAfee Active Response EDR</strong> across workstation and server infrastructure. Operated enterprise SIEM stack including <strong class='text-white'>Splunk, Rapid7 Nexpose</strong>, and Forcepoint alongside log management via Tripwire Enterprise.",
+            bullets: []
         },
         {
             company: "Capital First Bank",
@@ -138,21 +115,9 @@ const portfolioConfig = {
             basePrice: null,
             icon: "fa-shield",
             color: "#f59e0b",
-            period: "Aug 2018 – Dec 2019 · Mumbai, India",
-            description: "Launched career in information security at Capital First (now merged into IDFC First Bank), managing endpoint security and vulnerability programs across enterprise environments.",
-            bullets: [
-                "Configure vulnerability scans tailored to specific client requirements.",
-                "Produce vulnerability assessment reports and distribute to IT Support teams for remediation.",
-                "Produce weekly and monthly security reporting for threat and vulnerability management services.",
-                "Perform policy compliance scans and deliver reports to technology owners.",
-                "Contributed to vulnerability management by identifying technical risks: SAST/DAST scans, container security, and SCAP baselines.",
-                "Identify and resolve false-positive findings in assessment results.",
-                "Central tracking and management of enterprise vulnerabilities.",
-                "Centralized management of anti-virus software (McAfee ePO) and the entire McAfee endpoint suite.",
-                "Installation and maintenance of host-based security systems (Endpoint security) on McAfee ePO Server.",
-                "Disk/File Encryption, Data Loss Prevention Management, Endpoint Detection Response.",
-                "Detect security issues, create customer tickets, and manage problems until closure."
-            ]
+            period: "Mumbai, India",
+            description: "Managed enterprise vulnerability scanning, compliance reporting, and endpoint protection across the organization. Administered the full <strong class='text-white'>McAfee ePO</strong> suite including DLP, disk encryption, and EDR. Delivered weekly threat reports and tracked remediation of identified risks across SAST/DAST, container, and configuration security domains.",
+            bullets: []
         }
     ],
 
