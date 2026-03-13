@@ -5,7 +5,7 @@ const portfolioConfig = {
     // Identity & Branding
     name: "Sahasra Saikiran Mandiga",
     title: "Cybersecurity Engineer",
-    subtitle: "",
+    subtitle: " ",
     tagline: "Vigilant Defense. Resilient Operations.",
 
     // Contact Information
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const logoUrl = `https://cdn.brandfetch.io/domain/${cert.brandDomain}/w/64/h/64?c=1idACOz1x5eksqnaYUr`;
             certContainer.innerHTML += `
                 <span class="px-3 py-1 bg-black/50 border border-[#00ffcc] text-[#00ffcc] text-[10px] font-bold rounded-sm uppercase tracking-wider flex items-center gap-2">
-                    <img src="${logoUrl}" alt="${cert.name}" class="w-4 h-4 object-contain brightness-0 invert">
+                    <img src="${logoUrl}" alt="${cert.name}" class="w-4 h-4 object-contain">
                     ${cert.name}
                 </span>`;
         });
