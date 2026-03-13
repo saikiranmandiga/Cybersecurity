@@ -63,7 +63,9 @@ const portfolioConfig = {
             basePrice: 54.32,
             icon: "fa-fire-extinguisher",
             color: "#00ffcc",
-            description: "Configured and managed <strong class='text-white'>Palo Alto firewalls</strong> centrally through <strong class='text-white'>Panorama M-500</strong>. Implemented Global Protect VPNs ensuring secure remote access. Administered privileged access management (PAM) utilizing <strong class='text-white'>CyberArk</strong>, significantly reducing insider threat vectors."
+            period: "Present (Houston, TX)",
+            description: "Configured and managed <strong class='text-white'>Palo Alto firewalls</strong> centrally through <strong class='text-white'>Panorama M-500</strong>. Implemented Global Protect VPNs ensuring secure remote access. Administered privileged access management (PAM) utilizing <strong class='text-white'>CyberArk</strong>, significantly reducing insider threat vectors.",
+            bullets: []
         },
         {
             company: "JP Morgan Chase",
@@ -74,7 +76,83 @@ const portfolioConfig = {
             basePrice: 196.48,
             icon: "fa-building-columns",
             color: "#0088ff",
-            description: "Automated vulnerability detection workflows and compliance reporting by integrating <strong class='text-white'>Splunk</strong> analytics with <strong class='text-white'>Qualys</strong> vulnerability management suites, enhancing incident detection speeds across financial perimeters."
+            period: "(Houston, TX)",
+            description: "Automated vulnerability detection workflows and compliance reporting by integrating <strong class='text-white'>Splunk</strong> analytics with <strong class='text-white'>Qualys</strong> vulnerability management suites, enhancing incident detection speeds across financial perimeters.",
+            bullets: []
+        },
+        {
+            company: "BNP Paribas",
+            brandDomain: "bnpparibas.com",
+            role: "IT Risk Management Consultant",
+            ticker: "EPA: BNP",
+            stockSymbol: "BNP.PA",
+            basePrice: 65.80,
+            icon: "fa-landmark",
+            color: "#00a651",
+            period: "May 2021 – Sep 2021 · Mumbai, India",
+            description: "Led IT risk management initiatives across application and infrastructure security for new IT projects at one of Europe's largest financial institutions.",
+            bullets: [
+                "Application and infrastructure security risk assessment for new IT Projects.",
+                "Assessment for a major change in the application and infrastructure.",
+                "Register and track security recommendations & security exceptions.",
+                "Second-level review on security exceptions raised by business units.",
+                "Support product teams by conducting design reviews, threat modeling, security testing, and code reviews.",
+                "Monitoring compliance with NIST SP 800-53, ISO 27001, NERC, and other security frameworks.",
+                "Communicate effectively with both technical and non-technical individuals at all levels of the organization.",
+                "Assess risk of proposed changes to infrastructure, code, and connectivity.",
+                "Determine security violations and inefficiencies by conducting periodic audits.",
+                "Act as technical information security reviewer of performance reports, operating procedures and other documents."
+            ]
+        },
+        {
+            company: "IDFC First Bank",
+            brandDomain: "idfcfirstbank.com",
+            role: "Cybersecurity Analyst",
+            ticker: "NSE: IDFCFIRSTB",
+            stockSymbol: "IDFCFIRSTB.NS",
+            basePrice: 72.50,
+            icon: "fa-shield-halved",
+            color: "#ef4444",
+            period: "Dec 2019 – May 2021 · Mumbai, India",
+            description: "Secured enterprise banking infrastructure, managing firewall architectures and endpoint security across one of India's fastest-growing private sector banks.",
+            bullets: [
+                "Collaborate with network architects and security teams to develop firewall architecture and design solutions based on business requirements.",
+                "Analyze network traffic patterns and security needs to determine firewall placement and rule configuration.",
+                "Configure firewall policies, including interfaces, zones, security policies, NAT rules, and VPN tunnels.",
+                "Implement and maintain high availability and redundancy configurations.",
+                "Implementing McAfee Active Response (EDR Solution) across Workstation and test servers.",
+                "Investigate and troubleshoot firewall-related issues including connectivity, access control, and VPN problems.",
+                "Monitored client network with McAfee Threat Analyzer; used Tripwire IP 360 for vulnerability scanning.",
+                "Worked on log management using Tripwire Console and Tripwire Enterprise file integrity solutions.",
+                "Configured ArcSight connectors and loggers to add missing assets in ArcSight.",
+                "Worked with SIEM solutions: Rapid7 Nexpose, Forcepoint, and Splunk.",
+                "Direct experience monitoring, configuring, and maintaining enterprise-level proxy: McAfee Web Gateway, Cisco Iron Port WSA-S690."
+            ]
+        },
+        {
+            company: "Capital First Bank",
+            brandDomain: "capitalfirst.com",
+            role: "Jr. Information Security Analyst",
+            ticker: "NSE: CAPF",
+            stockSymbol: null,
+            basePrice: null,
+            icon: "fa-shield",
+            color: "#f59e0b",
+            period: "Aug 2018 – Dec 2019 · Mumbai, India",
+            description: "Launched career in information security at Capital First (now merged into IDFC First Bank), managing endpoint security and vulnerability programs across enterprise environments.",
+            bullets: [
+                "Configure vulnerability scans tailored to specific client requirements.",
+                "Produce vulnerability assessment reports and distribute to IT Support teams for remediation.",
+                "Produce weekly and monthly security reporting for threat and vulnerability management services.",
+                "Perform policy compliance scans and deliver reports to technology owners.",
+                "Contributed to vulnerability management by identifying technical risks: SAST/DAST scans, container security, and SCAP baselines.",
+                "Identify and resolve false-positive findings in assessment results.",
+                "Central tracking and management of enterprise vulnerabilities.",
+                "Centralized management of anti-virus software (McAfee ePO) and the entire McAfee endpoint suite.",
+                "Installation and maintenance of host-based security systems (Endpoint security) on McAfee ePO Server.",
+                "Disk/File Encryption, Data Loss Prevention Management, Endpoint Detection Response.",
+                "Detect security issues, create customer tickets, and manage problems until closure."
+            ]
         }
     ],
 
@@ -244,49 +322,72 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const brandLogo = exp.brandDomain ? `<img src="https://cdn.brandfetch.io/domain/${exp.brandDomain}/w/128/h/128?c=1idACOz1x5eksqnaYUr" class="w-12 h-12 object-contain bg-white/5 p-1 rounded-lg border border-white/10" alt="${exp.company}">` : `<i class="fa-solid ${exp.icon} text-6xl"></i>`;
 
+
+            const bulletsHtml = (exp.bullets && exp.bullets.length > 0)
+                ? `<ul class="mt-3 space-y-1.5 relative z-10">${exp.bullets.map(b => `<li class="flex items-start gap-2 text-gray-300 text-sm"><i class="fa-solid fa-chevron-right text-[10px] mt-1 shrink-0" style="color: ${exp.color}"></i>${b}</li>`).join('')}</ul>`
+                : '';
+
+            const stockHtml = exp.stockSymbol
+                ? `<div id="${priceId}-container" class="text-xs font-bold font-mono text-green-400 flex items-center mt-0.5">
+                       <span id="${priceId}">${exp.basePrice ? '$' + exp.basePrice.toFixed(2) : '---'}</span>
+                       <i id="${priceId}-icon" class="fa-solid fa-caret-up ml-1 text-[10px]"></i>
+                   </div>`
+                : `<div class="text-xs font-mono text-gray-500 mt-0.5">Acquired · IDFC First</div>`;
+
             expContainer.innerHTML += `
                 <article class="physics-item p-5 glass-panel border-l-4 hover:bg-white/5 transition-colors relative overflow-hidden" style="border-left-color: ${exp.color}">
                     <div class="absolute top-0 right-0 p-2 opacity-10"><i class="fa-solid ${exp.icon} text-6xl"></i></div>
                     <div class="flex justify-between items-start mb-1 relative z-10">
                         <div class="flex items-center gap-4">
                             ${brandLogo}
-                            <h4 class="text-xl font-bold text-white">${exp.company}</h4>
+                            <div>
+                                <h4 class="text-xl font-bold text-white">${exp.company}</h4>
+                                ${exp.period ? `<p class="text-gray-500 text-xs mono">${exp.period}</p>` : ''}
+                            </div>
                         </div>
                         <div class="bg-black/60 border border-gray-700 px-2 py-1 rounded flex flex-col items-end shrink-0">
-                            <span class="text-[10px] text-gray-400 mono leading-none uppercase">${exp.ticker.split(':')[0]}: <strong class="text-white">${exp.stockSymbol}</strong></span>
-                            <div id="${priceId}-container" class="text-xs font-bold font-mono text-green-400 flex items-center mt-0.5">
-                                <span id="${priceId}">${exp.basePrice}</span> <i id="${priceId}-icon" class="fa-solid fa-caret-up ml-1 text-[10px]"></i>
-                            </div>
+                            <span class="text-[10px] text-gray-400 mono leading-none uppercase">${exp.ticker.split(':')[0]}: <strong class="text-white">${exp.stockSymbol || exp.ticker.split(': ')[1]}</strong></span>
+                            ${stockHtml}
                         </div>
                     </div>
                     <p class="mono text-sm uppercase tracking-wider mb-3 relative z-10" style="color: ${exp.color}">${exp.role}</p>
-                    <p class="text-gray-300 text-sm leading-relaxed relative z-10">
-                        ${exp.description}
-                    </p>
+                    <p class="text-gray-300 text-sm leading-relaxed relative z-10">${exp.description}</p>
+                    ${bulletsHtml}
                 </article>
             `;
 
-            // Initialize Stock Ticker simulation for this item
-            setInterval(() => {
-                const priceEl = document.getElementById(priceId);
-                if (!priceEl) return;
-
-                let current = parseFloat(priceEl.innerText);
-                let change = (Math.random() * 0.8) - 0.35; // slight upward bias
-                let newPrice = (current + change).toFixed(2);
-                priceEl.innerText = newPrice;
-
-                const containerEl = document.getElementById(`${priceId}-container`);
-                const iconEl = document.getElementById(`${priceId}-icon`);
-
-                if (change >= 0) {
-                    containerEl.className = 'text-xs font-bold font-mono text-green-400 flex items-center mt-0.5';
-                    iconEl.className = 'fa-solid fa-caret-up ml-1 text-[10px]';
-                } else {
-                    containerEl.className = 'text-xs font-bold font-mono text-red-500 flex items-center mt-0.5';
-                    iconEl.className = 'fa-solid fa-caret-down ml-1 text-[10px]';
-                }
-            }, 3000 + (Math.random() * 1000));
+            // Fetch live price from Yahoo Finance (no API key needed)
+            if (exp.stockSymbol) {
+                (function(symbol, pid, base) {
+                    function updatePrice(price, prev) {
+                        const el = document.getElementById(pid);
+                        const ci = document.getElementById(pid + '-container');
+                        const ic = document.getElementById(pid + '-icon');
+                        if (!el || !ci || !ic) return;
+                        const isUp = price >= prev;
+                        el.textContent = '$' + price.toFixed(2);
+                        ci.className = 'text-xs font-bold font-mono flex items-center mt-0.5 ' + (isUp ? 'text-green-400' : 'text-red-500');
+                        ic.className = 'fa-solid ml-1 text-[10px] ' + (isUp ? 'fa-caret-up' : 'fa-caret-down');
+                    }
+                    let lastPrice = base || 100;
+                    function fetchPrice() {
+                        fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1d`)
+                            .then(r => r.json())
+                            .then(d => {
+                                const p = d?.chart?.result?.[0]?.meta?.regularMarketPrice;
+                                if (p) { updatePrice(p, lastPrice); lastPrice = p; }
+                            })
+                            .catch(() => {
+                                // Fallback: simulate small fluctuation on the base price
+                                const delta = (Math.random() * 0.8) - 0.35;
+                                lastPrice = parseFloat((lastPrice + delta).toFixed(2));
+                                updatePrice(lastPrice, lastPrice - delta);
+                            });
+                    }
+                    fetchPrice();
+                    setInterval(fetchPrice, 60000); // refresh every 60s
+                })(exp.stockSymbol, priceId, exp.basePrice);
+            }
         });
     }
 
