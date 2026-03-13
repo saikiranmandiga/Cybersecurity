@@ -150,27 +150,29 @@
 
     <!-- MULTI-FEED FETCH SCRIPT -->
     <script>
-        // RSS Sources targeted for maximum uptime and real news
-        const sources = {
-            "Palo Alto Networks": "https://www.paloaltonetworks.com/blog/feed/",
-            "BleepingComputer": "https://www.bleepingcomputer.com/feed/",
-            "Dark Reading": "https://www.darkreading.com/rss.xml",
-            "Krebs on Security": "https://krebsonsecurity.com/feed/",
-            "The Hacker News": "https://feeds.feedburner.com/TheHackersNews"
-        };
-        
-        // We omit CISA.gov currently as their official xml often returns CORS or invalid RSS blocks on free public converters, 
-        // but it can be added into the array if needed.
+        // RSS Sources with domains for Brandfetch integration
+        const sources = [
+            { name: "Palo Alto Networks", url: "https://www.paloaltonetworks.com/blog/feed/", domain: "paloaltonetworks.com" },
+            { name: "BleepingComputer", url: "https://www.bleepingcomputer.com/feed/", domain: "bleepingcomputer.com" },
+            { name: "Dark Reading", url: "https://www.darkreading.com/rss.xml", domain: "darkreading.com" },
+            { name: "Krebs on Security", url: "https://krebsonsecurity.com/feed/", domain: "krebsonsecurity.com" },
+            { name: "The Hacker News", url: "https://feeds.feedburner.com/TheHackersNews", domain: "thehackernews.com" }
+        ];
 
         const grid = document.getElementById('sources-grid');
 
         // Render loading panels first
-        Object.keys(sources).forEach(sourceName => {
-            const safeId = sourceName.replace(/\s+/g, '-').toLowerCase();
+        sources.forEach(source => {
+            const safeId = source.name.replace(/\s+/g, '-').toLowerCase();
+            const logoUrl = `https://cdn.brandfetch.io/domain/${source.domain}/w/64/h/64?c=1idACOz1x5eksqnaYUr`;
+            
             grid.innerHTML += `
                 <section id="panel-${safeId}" class="glass-panel p-5 border-t-2 border-t-[#0088ff] flex flex-col h-[400px]">
                     <h3 class="text-lg text-white font-bold mb-4 uppercase border-b border-gray-700 pb-2 flex items-center justify-between">
-                        <span>${sourceName}</span>
+                        <div class="flex items-center gap-3">
+                            <img src="${logoUrl}" class="w-6 h-6 object-contain" alt="${source.name} Logo">
+                            <span>${source.name}</span>
+                        </div>
                         <i class="fa-solid fa-rss text-xs text-gray-500"></i>
                     </h3>
                     <div id="content-${safeId}" class="flex-1 overflow-y-auto pr-2 space-y-3">
@@ -184,12 +186,12 @@
         });
 
         // Fetch each source asynchronously
-        Object.entries(sources).forEach(async ([sourceName, rssUrl]) => {
-            const safeId = sourceName.replace(/\s+/g, '-').toLowerCase();
+        sources.forEach(async (source) => {
+            const safeId = source.name.replace(/\s+/g, '-').toLowerCase();
             const container = document.getElementById(`content-${safeId}`);
             
             // Using a free RSS to JSON API
-            const apiEndpoint = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+            const apiEndpoint = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(source.url)}`;
 
             try {
                 const response = await fetch(apiEndpoint);
@@ -238,7 +240,7 @@
                     throw new Error('Feed failed');
                 }
             } catch (error) {
-                console.error(`Error fetching ${sourceName}:`, error);
+                console.error(`Error fetching ${source.name}:`, error);
                 // CISA or secure feeds often block proxy integrations
                 container.innerHTML = `
                     <div class="h-full flex flex-col items-center justify-center text-[#ff003c] mono text-xs text-center border border-dashed border-[#ff003c]/30 p-4 rounded bg-[#ff003c]/5">

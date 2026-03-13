@@ -15,21 +15,27 @@ const portfolioConfig = {
         phone: "6303283679"
     },
 
-    // Certifications (Format: array of strings)
+    // Certifications (Format: array of objects with name and brandDomain)
     certifications: [
-        "CISM",
-        "CEH",
-        "Security+",
-        "AWS SysOps Admin"
+        { name: "CISM", brandDomain: "isaca.org" },
+        { name: "CEH", brandDomain: "eccouncil.org" },
+        { name: "Security+", brandDomain: "comptia.org" },
+        { name: "AWS SysOps Admin", brandDomain: "aws.amazon.com" }
     ],
 
-    // Core Tech Stack (Format: array of strings)
+    // Core Tech Stack (Format: array of items with name and brandDomain)
     coreTech: [
-        "Palo Alto",
-        "AWS Cloud Security",
-        "Splunk",
-        "Tenable",
-        "CyberArk"
+        { name: "Palo Alto Networks", brandDomain: "paloaltonetworks.com" },
+        { name: "Cisco Systems", brandDomain: "cisco.com" },
+        { name: "Fortinet", brandDomain: "fortinet.com" },
+        { name: "Check Point", brandDomain: "checkpoint.com" },
+        { name: "Zscaler", brandDomain: "zscaler.com" },
+        { name: "Splunk", brandDomain: "splunk.com" },
+        { name: "CrowdStrike", brandDomain: "crowdstrike.com" },
+        { name: "Tenable", brandDomain: "tenable.com" },
+        { name: "CyberArk", brandDomain: "cyberark.com" },
+        { name: "Microsoft Defender", brandDomain: "microsoft.com" },
+        { name: "AWS Security", brandDomain: "aws.amazon.com" }
     ],
 
     // Homelab & Infrastructure Projects
@@ -50,6 +56,7 @@ const portfolioConfig = {
     experience: [
         {
             company: "Academy Sports & Outdoors",
+            brandDomain: "academy.com",
             role: "Cybersecurity Engineer",
             ticker: "NASDAQ: ASO",
             stockSymbol: "ASO",
@@ -60,6 +67,7 @@ const portfolioConfig = {
         },
         {
             company: "JP Morgan Chase",
+            brandDomain: "jpmorganchase.com",
             role: "Sr. Cybersecurity Consultant",
             ticker: "NYSE: JPM",
             stockSymbol: "JPM",
@@ -182,7 +190,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (certContainer) {
         certContainer.innerHTML = '';
         portfolioConfig.certifications.forEach(cert => {
-            certContainer.innerHTML += `<span class="px-3 py-1 bg-black/50 border border-[#00ffcc] text-[#00ffcc] text-xs font-bold rounded-sm uppercase tracking-wider">${cert}</span>`;
+            const logoUrl = `https://cdn.brandfetch.io/domain/${cert.brandDomain}/w/64/h/64?c=1idACOz1x5eksqnaYUr`;
+            certContainer.innerHTML += `
+                <span class="px-3 py-1 bg-black/50 border border-[#00ffcc] text-[#00ffcc] text-[10px] font-bold rounded-sm uppercase tracking-wider flex items-center gap-2">
+                    <img src="${logoUrl}" alt="${cert.name}" class="w-4 h-4 object-contain brightness-0 invert">
+                    ${cert.name}
+                </span>`;
         });
     }
 
@@ -191,7 +204,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (techContainer) {
         techContainer.innerHTML = '';
         portfolioConfig.coreTech.forEach(tech => {
-            techContainer.innerHTML += `<span class="px-3 py-1 bg-[#0f172a] border border-gray-600 text-gray-300 text-xs rounded-sm">${tech}</span>`;
+            const logoUrl = `https://cdn.brandfetch.io/domain/${tech.brandDomain}/w/64/h/64?c=1idACOz1x5eksqnaYUr`;
+            techContainer.innerHTML += `
+                <span class="px-3 py-1 bg-[#0f172a] border border-gray-600 text-gray-300 text-xs rounded-sm flex items-center gap-2">
+                    <img src="${logoUrl}" alt="${tech.name}" class="w-4 h-4 object-contain opacity-80 group-hover:opacity-100">
+                    ${tech.name}
+                </span>`;
         });
     }
 
@@ -220,12 +238,17 @@ document.addEventListener('DOMContentLoaded', () => {
             // Setup dynamic ID for stock ticker
             const priceId = `stock-price-${idx}`;
 
+            const brandLogo = exp.brandDomain ? `<img src="https://cdn.brandfetch.io/domain/${exp.brandDomain}/w/128/h/128?c=1idACOz1x5eksqnaYUr" class="w-12 h-12 object-contain bg-white/5 p-1 rounded-lg border border-white/10" alt="${exp.company}">` : `<i class="fa-solid ${exp.icon} text-6xl"></i>`;
+
             expContainer.innerHTML += `
                 <article class="physics-item p-5 glass-panel border-l-4 hover:bg-white/5 transition-colors relative overflow-hidden" style="border-left-color: ${exp.color}">
                     <div class="absolute top-0 right-0 p-2 opacity-10"><i class="fa-solid ${exp.icon} text-6xl"></i></div>
-                    <div class="flex justify-between items-start mb-1">
-                        <h4 class="text-xl font-bold text-white relative z-10">${exp.company}</h4>
-                        <div class="bg-black/60 border border-gray-700 px-2 py-1 rounded flex flex-col items-end shrink-0 relative z-10">
+                    <div class="flex justify-between items-start mb-1 relative z-10">
+                        <div class="flex items-center gap-4">
+                            ${brandLogo}
+                            <h4 class="text-xl font-bold text-white">${exp.company}</h4>
+                        </div>
+                        <div class="bg-black/60 border border-gray-700 px-2 py-1 rounded flex flex-col items-end shrink-0">
                             <span class="text-[10px] text-gray-400 mono leading-none uppercase">${exp.ticker.split(':')[0]}: <strong class="text-white">${exp.stockSymbol}</strong></span>
                             <div id="${priceId}-container" class="text-xs font-bold font-mono text-green-400 flex items-center mt-0.5">
                                 <span id="${priceId}">${exp.basePrice}</span> <i id="${priceId}-icon" class="fa-solid fa-caret-up ml-1 text-[10px]"></i>
