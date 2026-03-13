@@ -5,14 +5,14 @@ const portfolioConfig = {
     // Identity & Branding
     name: "Sahasra Saikiran Mandiga",
     title: "Cybersecurity Engineer",
-    subtitle: "Sr. Cybersecurity Consultant",
+    subtitle: "",
     tagline: "Vigilant Defense. Resilient Operations.",
 
     // Contact Information
     contact: {
         location: "Houston, TX",
         email: "saikiranmandiga@skcyberops.com",
-        phone: "6303283679"
+        phone: "4702107747"
     },
 
     // Certifications (Format: array of objects with name and brandDomain)
