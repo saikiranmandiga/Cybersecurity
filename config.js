@@ -192,8 +192,10 @@ document.addEventListener('DOMContentLoaded', () => {
         portfolioConfig.certifications.forEach(cert => {
             const logoUrl = `https://cdn.brandfetch.io/domain/${cert.brandDomain}/w/64/h/64?c=1idACOz1x5eksqnaYUr`;
             certContainer.innerHTML += `
-                <span class="px-3 py-1 bg-black/50 border border-[#00ffcc] text-[#00ffcc] text-[10px] font-bold rounded-sm uppercase tracking-wider flex items-center gap-2">
-                    <img src="${logoUrl}" alt="${cert.name}" class="w-4 h-4 object-contain">
+                <span class="px-3 py-2 bg-black/40 border border-gray-800 hover:border-[#00ffcc]/50 text-[#00ffcc] text-[11px] font-bold rounded-lg uppercase tracking-wider flex items-center gap-3 transition-colors">
+                    <div class="skill-pill-icon" style="background: rgba(255,255,255,.06); width: 28px; height: 28px; border-radius: 6px;">
+                        <img src="${logoUrl}" alt="${cert.name}" style="width:20px; height:20px; object-fit:contain; filter:drop-shadow(0 0 5px rgba(255,255,255,0.2))">
+                    </div>
                     ${cert.name}
                 </span>`;
         });
