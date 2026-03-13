@@ -3,130 +3,134 @@
    ============================================================ */
 (function() {
 
-/* ── 1. BOOT SCREEN DOM ───────────────────────────────────── */
-document.body.insertAdjacentHTML('afterbegin', `
-<!-- BOOT SCREEN -->
-<div id="boot-screen">
-  <div class="boot-grid"></div>
-  <div class="boot-vignette"></div>
-  <div class="boot-content">
-    <div class="boot-badge">
-      <span><span class="boot-pulse"></span>SK CYBEROPS // SECURE ACCESS PROTOCOL<span class="boot-pulse"></span></span>
-    </div>
-    <div class="boot-ip-card">
-      <p class="boot-ip-label">// Remote Host Identification</p>
-      <div class="boot-ip-grid">
-        <div class="boot-ip-item"><p>IPv4 Address</p><p id="boot-ip-val">RESOLVING...</p></div>
-        <div class="boot-ip-item"><p>Origin</p><p id="boot-country-val">---</p></div>
-        <div class="boot-ip-item"><p>Network</p><p id="boot-org-val">---</p></div>
+/* ── 1. BOOT SCREEN ────────────────────────────────────────── */
+const HAS_BOOTED = localStorage.getItem('cyberops_booted');
+
+if (!HAS_BOOTED) {
+  document.body.insertAdjacentHTML('afterbegin', `
+  <!-- BOOT SCREEN -->
+  <div id="boot-screen">
+    <div class="boot-grid"></div>
+    <div class="boot-vignette"></div>
+    <div class="boot-content">
+      <div class="boot-badge">
+        <span><span class="boot-pulse"></span>SK CYBEROPS // SECURE ACCESS PROTOCOL<span class="boot-pulse"></span></span>
       </div>
-    </div>
-    <div class="boot-terminal">
-      <div class="boot-term-bar">
-        <span class="btn-dot" style="background:#ff003c"></span>
-        <span class="btn-dot" style="background:#eab308"></span>
-        <span class="btn-dot" style="background:#00ffcc"></span>
-        <span class="boot-term-title">cyberops@saikiran:~ SecureConnect</span>
+      <div class="boot-ip-card">
+        <p class="boot-ip-label">// Remote Host Identification</p>
+        <div class="boot-ip-grid">
+          <div class="boot-ip-item"><p>IPv4 Address</p><p id="boot-ip-val">RESOLVING...</p></div>
+          <div class="boot-ip-item"><p>Origin</p><p id="boot-country-val">---</p></div>
+          <div class="boot-ip-item"><p>Network</p><p id="boot-org-val">---</p></div>
+        </div>
       </div>
-      <div id="boot-log"></div>
+      <div class="boot-terminal">
+        <div class="boot-term-bar">
+          <span class="btn-dot" style="background:#ff003c"></span>
+          <span class="btn-dot" style="background:#eab308"></span>
+          <span class="btn-dot" style="background:#00ffcc"></span>
+          <span class="boot-term-title">cyberops@saikiran:~ SecureConnect</span>
+        </div>
+        <div id="boot-log"></div>
+      </div>
+      <div class="boot-progress-row"><span>Security Protocol</span><span id="boot-pct">0%</span></div>
+      <div class="boot-bar-track"><div id="boot-bar"></div></div>
     </div>
-    <div class="boot-progress-row"><span>Security Protocol</span><span id="boot-pct">0%</span></div>
-    <div class="boot-bar-track"><div id="boot-bar"></div></div>
   </div>
-</div>
-`);
+  `);
 
-/* ── 2. BOOT SEQUENCE ─────────────────────────────────────── */
-const STEPS = [
-  { label: 'INITIALIZING SECURE CHANNEL',   detail: 'Establishing TLS 1.3 handshake...' },
-  { label: 'VALIDATING ORIGIN CERTIFICATE', detail: 'Checking X.509 chain integrity...' },
-  { label: 'GEOLOCATING REMOTE HOST',       detail: 'Querying GeoIP database...' },
-  { label: 'RUNNING FIREWALL INSPECTION',   detail: 'Deep packet inspection — zero threats detected' },
-  { label: 'ANALYZING NETWORK TOPOLOGY',    detail: 'BGP route trace complete — 3 hops secured' },
-  { label: 'SCANNING FOR ACTIVE THREATS',   detail: 'CVE lookup finished — environment clean' },
-  { label: 'AUTHENTICATING OPERATIVE',      detail: 'Biometric + behavioral token issued' },
-  { label: 'ACCESS GRANTED',                detail: 'Clearance level: PRIORITY_ALPHA' },
-];
-const DURATIONS = [700, 800, 950, 850, 800, 900, 700, 600];
+  /* ── 2. BOOT SEQUENCE ─────────────────────────────────────── */
+  const STEPS = [
+    { label: 'INITIALIZING SECURE CHANNEL',   detail: 'Establishing TLS 1.3 handshake...' },
+    { label: 'VALIDATING ORIGIN CERTIFICATE', detail: 'Checking X.509 chain integrity...' },
+    { label: 'GEOLOCATING REMOTE HOST',       detail: 'Querying GeoIP database...' },
+    { label: 'RUNNING FIREWALL INSPECTION',   detail: 'Deep packet inspection — zero threats detected' },
+    { label: 'ANALYZING NETWORK TOPOLOGY',    detail: 'BGP route trace complete — 3 hops secured' },
+    { label: 'SCANNING FOR ACTIVE THREATS',   detail: 'CVE lookup finished — environment clean' },
+    { label: 'AUTHENTICATING OPERATIVE',      detail: 'Biometric + behavioral token issued' },
+    { label: 'ACCESS GRANTED',                detail: 'Clearance level: PRIORITY_ALPHA' },
+  ];
+  const DURATIONS = [700, 800, 950, 850, 800, 900, 700, 600];
 
-const bootLog    = document.getElementById('boot-log');
-const bootBar    = document.getElementById('boot-bar');
-const bootPct    = document.getElementById('boot-pct');
-const bootScreen = document.getElementById('boot-screen');
+  const bootLog    = document.getElementById('boot-log');
+  const bootBar    = document.getElementById('boot-bar');
+  const bootPct    = document.getElementById('boot-pct');
+  const bootScreen = document.getElementById('boot-screen');
 
-// Fetch IP server-side (works in prod) or fall back to ipify
-fetch('/api/visitor-ip')
-  .then(r => r.json())
-  .then(d => {
-    document.getElementById('boot-ip-val').textContent      = d.ip      || 'CLASSIFIED';
-    document.getElementById('boot-country-val').textContent = d.country  || '---';
-    document.getElementById('boot-org-val').textContent     = (d.org     || '---').slice(0,28);
-  })
-  .catch(() => {
-    // Fallback for plain HTTP server (no Next.js API)
-    fetch('https://api.ipify.org?format=json')
-      .then(r => r.json())
-      .then(d => {
-        document.getElementById('boot-ip-val').textContent = d.ip || 'CLASSIFIED';
-        return fetch(`https://ipapi.co/${d.ip}/json/`);
-      })
-      .then(r => r.json())
-      .then(d => {
-        document.getElementById('boot-country-val').textContent = d.country_name || '---';
-        document.getElementById('boot-org-val').textContent     = (d.org || '---').slice(0,28);
-      })
-      .catch(() => {
-        document.getElementById('boot-ip-val').textContent = 'CLASSIFIED';
-      });
-  });
+  // Fetch IP
+  fetch('/api/visitor-ip')
+    .then(r => r.json())
+    .then(d => {
+      document.getElementById('boot-ip-val').textContent      = d.ip      || 'CLASSIFIED';
+      document.getElementById('boot-country-val').textContent = d.country  || '---';
+      document.getElementById('boot-org-val').textContent     = (d.org     || '---').slice(0,28);
+    })
+    .catch(() => {
+      fetch('https://api.ipify.org?format=json')
+        .then(r => r.json())
+        .then(d => {
+          document.getElementById('boot-ip-val').textContent = d.ip || 'CLASSIFIED';
+          return fetch(`https://ipapi.co/${d.ip}/json/`);
+        })
+        .then(r => r.json())
+        .then(d => {
+          document.getElementById('boot-country-val').textContent = d.country_name || '---';
+          document.getElementById('boot-org-val').textContent     = (d.org || '---').slice(0,28);
+        })
+        .catch(() => {
+          document.getElementById('boot-ip-val').textContent = 'CLASSIFIED';
+        });
+    });
 
-let stepIdx = 0;
-let typeInt  = null;
-let activeDiv = null;
+  let stepIdx = 0;
+  let typeInt  = null;
+  let activeDiv = null;
 
-function typeDetail(text, el) {
-  let i = 0;
-  if (typeInt) clearInterval(typeInt);
-  el.innerHTML = '';
-  typeInt = setInterval(() => {
-    i++;
-    el.innerHTML = text.slice(0, i) + '<span class="blink">_</span>';
-    if (i >= text.length) clearInterval(typeInt);
-  }, 22);
-}
-
-function runStep(idx) {
-  if (idx >= STEPS.length) {
-    bootLog.insertAdjacentHTML('beforeend',
-      `<div class="boot-step"><span class="boot-step-ok">✓</span><span class="boot-step-label" style="color:#00ffcc">ACCESS GRANTED — LOADING OPERATIVE PROFILE...</span></div>`);
-    setTimeout(() => {
-      bootScreen.classList.add('hidden');
-      setTimeout(() => bootScreen.remove(), 800);
-    }, 400);
-    return;
+  function typeDetail(text, el) {
+    let i = 0;
+    if (typeInt) clearInterval(typeInt);
+    el.innerHTML = '';
+    typeInt = setInterval(() => {
+      i++;
+      el.innerHTML = text.slice(0, i) + '<span class="blink">_</span>';
+      if (i >= text.length) clearInterval(typeInt);
+    }, 22);
   }
-  const step = STEPS[idx];
-  bootBar.style.width = Math.round((idx / STEPS.length) * 100) + '%';
-  bootPct.textContent  = Math.round((idx / STEPS.length) * 100) + '%';
 
-  if (activeDiv && idx > 0) {
-    const prev = STEPS[idx-1];
-    activeDiv.innerHTML = `<span class="boot-step-ok">✓</span><div><span class="boot-step-text">${prev.label}</span> <span class="boot-step-detail">${prev.detail}</span></div><span style="color:#00ffcc;font-size:10px;margin-left:auto">OK</span>`;
+  function runStep(idx) {
+    if (idx >= STEPS.length) {
+      bootLog.insertAdjacentHTML('beforeend',
+        `<div class="boot-step"><span class="boot-step-ok">✓</span><span class="boot-step-label" style="color:#00ffcc">ACCESS GRANTED — LOADING OPERATIVE PROFILE...</span></div>`);
+      setTimeout(() => {
+        bootScreen.classList.add('hidden');
+        localStorage.setItem('cyberops_booted', 'true');
+        setTimeout(() => bootScreen.remove(), 800);
+      }, 400);
+      return;
+    }
+    const step = STEPS[idx];
+    bootBar.style.width = Math.round((idx / STEPS.length) * 100) + '%';
+    bootPct.textContent  = Math.round((idx / STEPS.length) * 100) + '%';
+
+    if (activeDiv && idx > 0) {
+      const prev = STEPS[idx-1];
+      activeDiv.innerHTML = `<span class="boot-step-ok">✓</span><div><span class="boot-step-text">${prev.label}</span> <span class="boot-step-detail">${prev.detail}</span></div><span style="color:#00ffcc;font-size:10px;margin-left:auto">OK</span>`;
+    }
+    activeDiv = document.createElement('div');
+    activeDiv.className = 'boot-step';
+    activeDiv.innerHTML = `<span class="boot-step-act" style="animation:bPulse .5s infinite">›</span><div><span class="boot-step-label">${step.label}</span><br><span id="boot-typing" class="boot-step-detail"></span></div>`;
+    bootLog.appendChild(activeDiv);
+    bootLog.scrollTop = bootLog.scrollHeight;
+    typeDetail(step.detail, document.getElementById('boot-typing'));
+
+    setTimeout(() => { stepIdx++; runStep(stepIdx); }, DURATIONS[idx]);
   }
-  activeDiv = document.createElement('div');
-  activeDiv.className = 'boot-step';
-  activeDiv.innerHTML = `<span class="boot-step-act" style="animation:bPulse .5s infinite">›</span><div><span class="boot-step-label">${step.label}</span><br><span id="boot-typing" class="boot-step-detail"></span></div>`;
-  bootLog.appendChild(activeDiv);
-  bootLog.scrollTop = bootLog.scrollHeight;
-  typeDetail(step.detail, document.getElementById('boot-typing'));
 
-  setTimeout(() => { stepIdx++; runStep(stepIdx); }, DURATIONS[idx]);
+  setTimeout(() => runStep(stepIdx), 300);
+
+  const totalDur = DURATIONS.reduce((a,b) => a+b, 0) + 300;
+  setTimeout(() => { bootBar.style.width='100%'; bootPct.textContent='100%'; }, totalDur);
 }
-
-setTimeout(() => runStep(stepIdx), 300);
-
-const totalDur = DURATIONS.reduce((a,b) => a+b, 0) + 300;
-setTimeout(() => { bootBar.style.width='100%'; bootPct.textContent='100%'; }, totalDur);
 
 
 /* ── 3. SKILLS DATA ───────────────────────────────────────── */

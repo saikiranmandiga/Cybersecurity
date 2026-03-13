@@ -198,7 +198,7 @@
                     <i class="fa-solid fa-circle-nodes text-[#ff003c] text-sm animate-spin" style="animation-duration: 4s;"></i>
                 </h3>
                 
-                <div class="flex-1 overflow-hidden relative" style="height: 250px;">
+                <div class="flex-1 overflow-hidden relative min-h-[250px]" style="height: 250px;">
                     <!-- Scroll wrapper for css animation -->
                     <div id="news-container" class="space-y-3 absolute w-full transition-transform" style="animation: scrollUp 20s linear infinite;">
                         <!-- Loading State -->
@@ -359,26 +359,24 @@
                         container.innerHTML = ''; // clear loading state
                         
                         // Take more items to make the scrolling ticker look full
-                        const articles = data.items.slice(0, 6);
+                        const items = data.items.slice(0, 6);
                         const escapeStr = (s) => s.replace(/[&<>'"]/g, t => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[t]));
                         
-                        articles.forEach((item, index) => {
-                            // Extract just the date part
+                        let newsHtml = '';
+                        items.forEach((item) => {
                             const date = new Date(item.pubDate).toLocaleDateString();
-                            
-                            const articleHtml = `
+                            newsHtml += `
                                 <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="block p-3 bg-black/80 border border-[#ff003c]/30 rounded hover:border-[#ff003c] transition-colors group">
                                     <div class="flex items-start justify-between gap-2">
-                                        <h5 class="text-xs text-white font-medium line-clamp-2 group-hover:text-[#ff003c] transition-colors">${escapeStr(item.title)}</h5>
+                                        <h5 class="text-xs text-white font-medium line-clamp-2 group-hover:text-[#ff003c] transition-colors uppercase mono">${escapeStr(item.title)}</h5>
                                         <span class="mono text-[10px] text-gray-500 shrink-0">${escapeStr(date)}</span>
                                     </div>
                                 </a>
                             `;
-                            container.innerHTML += articleHtml;
                         });
                         
-                        // Duplicate for infinite scroll loop feel
-                        container.innerHTML += container.innerHTML;
+                        // Joint twice for seamless loop
+                        container.innerHTML = newsHtml + newsHtml;
                     }
                 } else {
                     throw new Error('Feed status not OK');
