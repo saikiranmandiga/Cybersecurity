@@ -190,14 +190,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (certContainer) {
         certContainer.innerHTML = '';
         portfolioConfig.certifications.forEach(cert => {
-            const logoUrl = `https://cdn.brandfetch.io/domain/${cert.brandDomain}/w/64/h/64?c=1idACOz1x5eksqnaYUr`;
+            const logoUrl = `https://cdn.brandfetch.io/domain/${cert.brandDomain}?c=1idACOz1x5eksqnaYUr`;
             certContainer.innerHTML += `
-                <span class="px-3 py-2 bg-black/40 border border-gray-800 hover:border-[#00ffcc]/50 text-[#00ffcc] text-[11px] font-bold rounded-lg uppercase tracking-wider flex items-center gap-3 transition-colors">
-                    <div class="skill-pill-icon" style="background: rgba(255,255,255,.06); width: 28px; height: 28px; border-radius: 6px;">
-                        <img src="${logoUrl}" alt="${cert.name}" style="width:20px; height:20px; object-fit:contain; filter:drop-shadow(0 0 5px rgba(255,255,255,0.2))">
+                <div class="skill-pill" style="border-radius: 8px; padding: 6px 12px; border: 1px solid rgba(0,255,204,0.3);">
+                    <div class="skill-pill-icon" style="background: rgba(0,255,204,0.1); width: 28px; height: 28px; border-radius: 6px;">
+                        <img src="${logoUrl}" alt="${cert.name}" style="width:20px; height:20px; object-fit:contain; filter:drop-shadow(0 0 5px rgba(255,255,255,0.1))">
                     </div>
-                    ${cert.name}
-                </span>`;
+                    <span class="text-[#00ffcc] text-[11px] font-bold uppercase tracking-wider">${cert.name}</span>
+                </div>`;
         });
     }
 
@@ -206,12 +206,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (techContainer) {
         techContainer.innerHTML = '';
         portfolioConfig.coreTech.forEach(tech => {
-            const logoUrl = `https://cdn.brandfetch.io/domain/${tech.brandDomain}/w/64/h/64?c=1idACOz1x5eksqnaYUr`;
+            const logoUrl = `https://cdn.brandfetch.io/domain/${tech.brandDomain}?c=1idACOz1x5eksqnaYUr`;
             techContainer.innerHTML += `
-                <span class="px-3 py-1 bg-[#0f172a] border border-gray-600 text-gray-300 text-xs rounded-sm flex items-center gap-2">
-                    <img src="${logoUrl}" alt="${tech.name}" class="w-4 h-4 object-contain opacity-80 group-hover:opacity-100">
-                    ${tech.name}
-                </span>`;
+                <div class="skill-pill" style="border-radius: 6px; padding: 4px 10px; opacity: 0.8;">
+                    <div class="skill-pill-icon" style="width: 24px; height: 24px;">
+                        <img src="${logoUrl}" alt="${tech.name}" style="width:18px; height:18px; object-fit:contain;">
+                    </div>
+                    <span class="text-gray-300 text-xs">${tech.name}</span>
+                </div>`;
         });
     }
 
