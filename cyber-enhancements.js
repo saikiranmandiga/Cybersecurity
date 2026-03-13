@@ -249,9 +249,6 @@ function initSkillsSection() {
 
   const cats = Object.keys(SKILLS);
   section.innerHTML = `
-    <h3 class="text-xl neon-text-blue mb-4 mono uppercase">
-      <i class="fa-solid fa-fingerprint mr-2"></i> Technical Arsenal
-    </h3>
     <div class="skill-tabs">
       ${cats.map((k, i) => `<button class="skill-tab${i===0?' active':''}" data-cat="${k}">${k}</button>`).join('')}
     </div>
