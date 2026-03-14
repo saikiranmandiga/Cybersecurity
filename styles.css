@@ -36,6 +36,11 @@ body {
   position: relative;
 }
 
+#bg-video {
+  z-index: -3;
+  pointer-events: none;
+}
+
 ::selection {
   background: var(--accent-red);
   color: #fff;
@@ -364,7 +369,7 @@ main {
 .delay-3 { transition-delay: 0.3s; }
 .delay-4 { transition-delay: 0.4s; }
 
-/* Responsive */
+ /* Responsive */
 @media (max-width: 1024px) {
   .bento-grid {
     grid-template-columns: repeat(2, 1fr);
